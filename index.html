@@ -1516,151 +1516,142 @@
 
   // ===== BUILD PDF CONTENT =====
   function buildPrintContent(data) {
+    // helpers
+    const S  = 'background:white;border:1px solid #dbeafe;border-radius:8px;padding:20px;margin-bottom:16px;'; // section card
+    const ST = 'font-size:14px;font-weight:700;color:#1a56db;border-bottom:2px solid #dbeafe;padding-bottom:8px;margin-bottom:14px;display:flex;align-items:center;gap:6px;'; // section title
+    const NUM = n => `<span style="background:#1a56db;color:white;min-width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;line-height:1;">${n}</span>`;
+    const MARK_YES = `<span style="background:#1a56db;color:white;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;flex-shrink:0;">✓</span>`;
+    const MARK_NO  = `<span style="background:#e2e8f0;color:#94a3b8;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✕</span>`;
+    const MARK_NA  = `<span style="color:#94a3b8;font-size:11px;padding:2px 8px;border:1px solid #e2e8f0;border-radius:10px;">לא רלוונטי</span>`;
+    const tag = t => `<span style="background:#1a56db;color:white;padding:3px 10px;border-radius:20px;font-size:11px;margin-left:4px;margin-bottom:4px;display:inline-block;">${t}</span>`;
+
+    function qRow(num, ans, marks, detail) {
+      const isYes = ans === 'כן';
+      const isNA  = ans === 'לא רלוונטי';
+      const mark  = isYes ? MARK_YES : isNA ? MARK_NA : MARK_NO;
+      let row = `<div style="padding:10px 0;border-bottom:1px solid #eff6ff;display:flex;align-items:flex-start;gap:10px;">`;
+      row += NUM(num);
+      row += `<div style="flex:1;">`;
+      row += `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">`;
+      row += `<span style="font-size:13px;font-weight:500;color:#0f172a;flex:1;">${qNames[num]}</span>`;
+      row += mark;
+      row += `</div>`;
+      if (isYes && marks) {
+        row += `<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">`;
+        marks.split(', ').forEach(t => { row += tag(t); });
+        row += `</div>`;
+      }
+      if (isYes && detail) {
+        row += `<div style="margin-top:5px;font-size:11px;color:#475569;background:#f8faff;padding:5px 8px;border-radius:4px;border-right:2px solid #bfdbfe;">${detail}</div>`;
+      }
+      row += `</div></div>`;
+      return row;
+    }
+
     const qNames = {
-      2:  'עישון',
-      3:  'אלכוהול',
-      4:  'סמים',
-      5:  'פניות לרופא / בדיקות רפואיות',
-      6:  'מוח ומערכת העצבים',
-      7:  'לב, מחלות דם וכלי דם',
-      8:  'מחלה נפשית / דיכאון / חרדה',
-      9:  'לחץ דם / סוכרת / כולסטרול',
-      10: 'אנדוקרינולוגיה ובלוטות',
-      11: 'סרטן וגידולים שפירים',
-      12: 'מערכת העיכול',
-      13: 'ריאות ונשימה',
-      14: 'מחלות זיהומיות / דלקתיות',
-      15: 'כליות ודרכי שתן',
-      16: 'הרניה / בקע',
-      17: 'ראומטולוגיה ומחלות אוטואימוניות',
-      18: 'אורתופדיה',
-      19: 'עיניים',
-      20: 'אף / אוזן / גרון',
-      21: 'עור ומין',
-      22: 'שאלון גברים',
-      23: 'שאלון נשים',
-      24: 'שאלון ילדים',
-      25: 'ניתוחים',
-      26: 'אשפוז',
-      27: 'תרופות קבועות',
+      2:'עישון', 3:'אלכוהול', 4:'סמים', 5:'פניות לרופא / בדיקות רפואיות',
+      6:'מוח ומערכת העצבים', 7:'לב, מחלות דם וכלי דם', 8:'מחלה נפשית / דיכאון / חרדה',
+      9:'לחץ דם / סוכרת / כולסטרול', 10:'אנדוקרינולוגיה ובלוטות', 11:'סרטן וגידולים',
+      12:'מערכת העיכול', 13:'ריאות ונשימה', 14:'מחלות זיהומיות / דלקתיות',
+      15:'כליות ודרכי שתן', 16:'הרניה / בקע', 17:'ראומטולוגיה ומחלות אוטואימוניות',
+      18:'אורתופדיה', 19:'עיניים', 20:'אף / אוזן / גרון', 21:'עור ומין',
+      22:'שאלון גברים', 23:'שאלון נשים', 24:'שאלון ילדים',
+      25:'ניתוחים', 26:'אשפוז', 27:'תרופות קבועות',
     };
 
     const div = document.createElement('div');
-    div.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#f0f7ff;color:#1e293b;font-family:Arial,Helvetica,sans-serif;direction:rtl;text-align:right;padding:0;line-height:1.7;font-size:13px;';
+    div.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#f0f7ff;color:#0f172a;font-family:Arial,Helvetica,sans-serif;direction:rtl;text-align:right;padding:0;line-height:1.6;font-size:13px;';
 
     let html = `
-      <div style="background:#1a56db;padding:28px 40px 22px;color:white;">
-        <div style="font-size:11px;opacity:0.8;margin-bottom:4px;letter-spacing:0.5px;">שאלון בריאות מגורים</div>
-        <h1 style="font-size:24px;font-weight:bold;margin:0 0 6px;">הצהרת בריאות מבוגרים</h1>
-        <div style="font-size:12px;opacity:0.85;">תאריך: ${data['תאריך'] || ''}</div>
+      <div style="background:#1a56db;color:white;padding:20px 28px;box-shadow:0 2px 8px rgba(26,86,219,0.25);border-bottom:3px solid #1e40af;">
+        <div style="font-size:20px;font-weight:700;margin-bottom:3px;">ה. שאלון בריאות מבוגרים</div>
+        <div style="font-size:12px;opacity:0.85;">הצהרת בריאות — תאריך: ${data['תאריך'] || ''}</div>
       </div>
 
-      <div style="padding:28px 40px;">
+      <div style="padding:16px 20px;">
 
-        <div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-          <div style="font-size:13px;font-weight:bold;color:#1a56db;border-bottom:1px solid #dbeafe;padding-bottom:8px;margin-bottom:12px;">פרטי מועמד ראשי</div>
+        <div style="${S}">
+          <div style="${ST}">👤 מועמד ראשי</div>
           <table style="width:100%;border-collapse:collapse;">
-            <tr>
-              <td style="padding:5px 8px;width:35%;color:#64748b;font-size:12px;">שם מלא</td>
-              <td style="padding:5px 8px;font-weight:bold;">${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}</td>
-            </tr>
-            <tr style="background:#f8faff;">
-              <td style="padding:5px 8px;color:#64748b;font-size:12px;">גובה / משקל</td>
-              <td style="padding:5px 8px;">${data['מועמד_ראשי_גובה']} ס"מ &nbsp;/&nbsp; ${data['מועמד_ראשי_משקל']} ק"ג</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 8px;color:#64748b;font-size:12px;">שינוי משקל</td>
-              <td style="padding:5px 8px;">${data['מועמד_ראשי_שינוי_משקל'] || 'לא'}</td>
-            </tr>
+            <tr><td style="padding:5px 6px;width:30%;color:#64748b;font-size:12px;">שם מלא</td><td style="padding:5px 6px;font-weight:700;">${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}</td></tr>
+            <tr style="background:#f8faff;"><td style="padding:5px 6px;color:#64748b;font-size:12px;">גובה / משקל</td><td style="padding:5px 6px;">${data['מועמד_ראשי_גובה']} ס"מ &nbsp;/&nbsp; ${data['מועמד_ראשי_משקל']} ק"ג</td></tr>
+            <tr><td style="padding:5px 6px;color:#64748b;font-size:12px;">שינוי משקל</td><td style="padding:5px 6px;">${data['מועמד_ראשי_שינוי_משקל'] || 'לא'}</td></tr>
           </table>
         </div>`;
 
     if (data['מועמד_משני_שם_פרטי']) {
       html += `
-        <div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-          <div style="font-size:13px;font-weight:bold;color:#1a56db;border-bottom:1px solid #dbeafe;padding-bottom:8px;margin-bottom:12px;">פרטי מועמד משני</div>
+        <div style="${S}">
+          <div style="${ST}">👤 מועמד משני</div>
           <table style="width:100%;border-collapse:collapse;">
-            <tr>
-              <td style="padding:5px 8px;width:35%;color:#64748b;font-size:12px;">שם מלא</td>
-              <td style="padding:5px 8px;font-weight:bold;">${data['מועמד_משני_שם_פרטי']} ${data['מועמד_משני_שם_משפחה']}</td>
-            </tr>
-            <tr style="background:#f8faff;">
-              <td style="padding:5px 8px;color:#64748b;font-size:12px;">גובה / משקל</td>
-              <td style="padding:5px 8px;">${data['מועמד_משני_גובה']} ס"מ &nbsp;/&nbsp; ${data['מועמד_משני_משקל']} ק"ג</td>
-            </tr>
+            <tr><td style="padding:5px 6px;width:30%;color:#64748b;font-size:12px;">שם מלא</td><td style="padding:5px 6px;font-weight:700;">${data['מועמד_משני_שם_פרטי']} ${data['מועמד_משני_שם_משפחה']}</td></tr>
+            <tr style="background:#f8faff;"><td style="padding:5px 6px;color:#64748b;font-size:12px;">גובה / משקל</td><td style="padding:5px 6px;">${data['מועמד_משני_גובה']} ס"מ &nbsp;/&nbsp; ${data['מועמד_משני_משקל']} ק"ג</td></tr>
           </table>
         </div>`;
     }
 
-    // Sport Q1
-    if (data['שאלה_1_ספורט']) {
-      html += `
-        <div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-          <div style="font-size:13px;font-weight:bold;color:#1a56db;border-bottom:1px solid #dbeafe;padding-bottom:8px;margin-bottom:12px;">ספורט מקצועי</div>
-          <div style="font-size:13px;">${data['שאלה_1_ספורט']}</div>
-        </div>`;
-    }
+    // Q1
+    html += `<div style="${S}"><div style="${ST}">🏥 ברכישת כיסוי ניתוחים בישראל</div>`;
+    html += `<div style="padding:10px 0;display:flex;align-items:flex-start;gap:10px;">${NUM(1)}<div style="flex:1;"><span style="font-size:13px;font-weight:500;">האם הנך עוסק בספורט מקצועי אשר שכר בצידו?</span>`;
+    if (data['שאלה_1_ספורט']) html += `<div style="margin-top:5px;font-size:11px;color:#475569;background:#f8faff;padding:5px 8px;border-radius:4px;border-right:2px solid #bfdbfe;">${data['שאלה_1_ספורט']}</div>`;
+    html += `</div></div></div>`;
 
-    // All answered questions — כן highlighted in blue, לא subdued
-    html += `
-      <div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-        <div style="font-size:13px;font-weight:bold;color:#1a56db;border-bottom:1px solid #dbeafe;padding-bottom:8px;margin-bottom:14px;">תשובות לשאלות</div>`;
-
-    for (let i = 2; i <= 27; i++) {
+    // Q2-Q5
+    html += `<div style="${S}"><div style="${ST}">📋 שאלות כלליות</div>`;
+    for (let i = 2; i <= 5; i++) {
       const ans = data[`שאלה_${i}`];
-      if (!ans) continue;
-      const isYes = ans === 'כן';
-      const marks = data[`שאלה_${i}_סימונים`];
-      const detail = data[`שאלה_${i}_פירוט`];
-      const bg = isYes ? '#eff6ff' : '#f8fafc';
-      const borderColor = isYes ? '#1a56db' : '#e2e8f0';
-      const ansColor = isYes ? '#1e40af' : '#64748b';
-      html += `<div style="margin-bottom:7px;padding:8px 14px;background:${bg};border-radius:6px;border-right:3px solid ${borderColor};">`;
-      html += `<span style="font-size:12px;color:#334155;font-weight:${isYes ? 'bold' : 'normal'};">${i}. ${qNames[i] || 'שאלה ' + i}</span>`;
-      html += `&nbsp;&nbsp;<span style="font-weight:bold;font-size:12px;color:${ansColor};">${ans}</span>`;
-      if (marks) html += `<div style="font-size:11px;color:#475569;margin-top:2px;">${marks}</div>`;
-      if (detail) html += `<div style="font-size:11px;color:#64748b;margin-top:2px;">פירוט: ${detail}</div>`;
-      html += `</div>`;
+      if (ans) html += qRow(i, ans, data[`שאלה_${i}_סימונים`], data[`שאלה_${i}_פירוט`]);
     }
+    html += `</div>`;
 
+    // Q6-Q24
+    html += `<div style="${S}"><div style="${ST}">⚕️ האם אובחנת במחלה, תופעה או פגיעה</div>`;
+    for (let i = 6; i <= 24; i++) {
+      const ans = data[`שאלה_${i}`];
+      if (ans) html += qRow(i, ans, data[`שאלה_${i}_סימונים`], data[`שאלה_${i}_פירוט`]);
+    }
+    html += `</div>`;
+
+    // Q25-Q27
+    html += `<div style="${S}"><div style="${ST}">📂 מצבים רפואיים נוספים</div>`;
+    for (let i = 25; i <= 27; i++) {
+      const ans = data[`שאלה_${i}`];
+      if (ans) html += qRow(i, ans, data[`שאלה_${i}_סימונים`], data[`שאלה_${i}_פירוט`]);
+    }
     html += `</div>`;
 
     // Q28 family history
     if (data['שאלה_28_היסטוריה_משפחתית']) {
-      html += `
-        <div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-          <div style="font-size:13px;font-weight:bold;color:#1a56db;border-bottom:1px solid #dbeafe;padding-bottom:8px;margin-bottom:12px;">28. היסטוריה משפחתית</div>
-          <div style="font-size:12px;color:#334155;">${data['שאלה_28_היסטוריה_משפחתית']}</div>
-        </div>`;
+      html += `<div style="${S}"><div style="${ST}">👨‍👩‍👧‍👦 קרן אור טופ / קרן לחיים — היסטוריה משפחתית</div>`;
+      html += `<div style="padding:8px 0;display:flex;align-items:flex-start;gap:10px;">${NUM(28)}`;
+      html += `<div style="flex:1;"><div style="font-size:13px;font-weight:500;margin-bottom:6px;">האם אובחנה מחלה בקרב קרובי משפחה?</div>`;
+      html += `<div style="display:flex;flex-wrap:wrap;gap:4px;">`;
+      data['שאלה_28_היסטוריה_משפחתית'].split(', ').forEach(t => { html += tag(t); });
+      html += `</div></div></div></div>`;
     }
 
     // Signatures
-    html += `<div style="background:white;border:1px solid #bfdbfe;border-radius:8px;padding:18px 20px;margin-bottom:20px;">
-      <div style="font-size:13px;font-weight:bold;color:#1a56db;border-bottom:1px solid #dbeafe;padding-bottom:8px;margin-bottom:14px;">חתימות</div>
-      <div style="display:table;width:100%;">`;
-
+    html += `<div style="${S}"><div style="${ST}">✍️ חתימות</div>`;
+    html += `<div style="display:flex;gap:30px;flex-wrap:wrap;">`;
     if (data['חתימה_מועמד_ראשי']) {
       const name1 = `${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}`.trim();
-      html += `<div style="display:inline-block;margin-left:40px;">
-        <img src="${data['חתימה_מועמד_ראשי']}" style="width:200px;height:80px;border:1px solid #bfdbfe;border-radius:6px;object-fit:contain;background:white;display:block;">
-        <div style="font-size:11px;color:#64748b;margin-top:4px;text-align:center;">${name1}</div>
-      </div>`;
+      html += `<div><div style="border:2px dashed #bfdbfe;border-radius:8px;padding:8px;background:white;display:inline-block;">
+        <img src="${data['חתימה_מועמד_ראשי']}" style="width:180px;height:75px;object-fit:contain;display:block;"></div>
+        <div style="font-size:11px;color:#64748b;margin-top:4px;text-align:center;">${name1}</div></div>`;
     }
     if (data['חתימה_מועמד_משני']) {
       const name2 = `${data['מועמד_משני_שם_פרטי'] || ''} ${data['מועמד_משני_שם_משפחה'] || ''}`.trim();
-      html += `<div style="display:inline-block;">
-        <img src="${data['חתימה_מועמד_משני']}" style="width:200px;height:80px;border:1px solid #bfdbfe;border-radius:6px;object-fit:contain;background:white;display:block;">
-        <div style="font-size:11px;color:#64748b;margin-top:4px;text-align:center;">${name2}</div>
-      </div>`;
+      html += `<div><div style="border:2px dashed #bfdbfe;border-radius:8px;padding:8px;background:white;display:inline-block;">
+        <img src="${data['חתימה_מועמד_משני']}" style="width:180px;height:75px;object-fit:contain;display:block;"></div>
+        <div style="font-size:11px;color:#64748b;margin-top:4px;text-align:center;">${name2}</div></div>`;
     }
-
     html += `</div></div>
 
-        <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:10px;padding-top:10px;border-top:1px solid #dbeafe;">
-          מסמך זה הופק אוטומטית ומהווה הצהרת בריאות חתומה דיגיטלית
-        </div>
+      <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:4px;padding-top:10px;border-top:1px solid #dbeafe;">
+        מסמך זה הופק אוטומטית ומהווה הצהרת בריאות חתומה דיגיטלית
+      </div>
 
-      </div>`;
+    </div>`;
 
     div.innerHTML = html;
     return div;
