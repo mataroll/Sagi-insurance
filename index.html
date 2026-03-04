@@ -709,21 +709,27 @@
     <div class="card-body">
       <div class="question"><div class="q-row"><div class="q-num">28</div><div class="q-content">
         <div class="q-text">למיטב ידיעתך האם בקרב אחד מקרוביך (אב / אם / אח / אחות) אובחנה אחת או יותר מהמחלות הבאות?</div>
-        <div class="chips" style="margin-top:8px;">
-          <span class="chip" onclick="toggleChip(this)">מחלת לב</span>
-          <span class="chip" onclick="toggleChip(this)">סרטן המעי הגס</span>
-          <span class="chip" onclick="toggleChip(this)">סרטן שחלות</span>
-          <span class="chip" onclick="toggleChip(this)">סרטן השד</span>
-          <span class="chip" onclick="toggleChip(this)">סרטן ערמונית</span>
-          <span class="chip" onclick="toggleChip(this)">סוכרת</span>
-          <span class="chip" onclick="toggleChip(this)">כליות פוליציסטיות</span>
-          <span class="chip" onclick="toggleChip(this)">טרשת נפוצה</span>
-          <span class="chip" onclick="toggleChip(this)">ניוון שרירים</span>
-          <span class="chip" onclick="toggleChip(this)">הנטינגטון</span>
-          <span class="chip" onclick="toggleChip(this)">פרקינסון</span>
-          <span class="chip" onclick="toggleChip(this)">אלצהיימר</span>
+        <div class="yn-group">
+          <label class="yn-btn"><input type="radio" name="q28" value="כן" onchange="showEl('q28d')"><div class="yn-label"><span class="yn-dot"></span>כן</div></label>
+          <label class="yn-btn"><input type="radio" name="q28" value="לא" onchange="hideEl('q28d')"><div class="yn-label"><span class="yn-dot"></span>לא</div></label>
         </div>
-        <div class="detail" style="margin-top:8px;"><textarea id="q28_detail" placeholder="פרט/י מי מבני המשפחה ואיזו מחלה..."></textarea></div>
+        <div id="q28d" class="hidden">
+          <div class="chips" style="margin-top:8px;">
+            <span class="chip" onclick="toggleChip(this)">מחלת לב</span>
+            <span class="chip" onclick="toggleChip(this)">סרטן המעי הגס</span>
+            <span class="chip" onclick="toggleChip(this)">סרטן שחלות</span>
+            <span class="chip" onclick="toggleChip(this)">סרטן השד</span>
+            <span class="chip" onclick="toggleChip(this)">סרטן ערמונית</span>
+            <span class="chip" onclick="toggleChip(this)">סוכרת</span>
+            <span class="chip" onclick="toggleChip(this)">כליות פוליציסטיות</span>
+            <span class="chip" onclick="toggleChip(this)">טרשת נפוצה</span>
+            <span class="chip" onclick="toggleChip(this)">ניוון שרירים</span>
+            <span class="chip" onclick="toggleChip(this)">הנטינגטון</span>
+            <span class="chip" onclick="toggleChip(this)">פרקינסון</span>
+            <span class="chip" onclick="toggleChip(this)">אלצהיימר</span>
+          </div>
+          <div class="detail" style="margin-top:8px;"><textarea id="q28_detail" placeholder="פרט/י מי מבני המשפחה ואיזו מחלה..."></textarea></div>
+        </div>
       </div></div></div>
     </div>
   </div>
@@ -875,12 +881,13 @@
       }
     }
 
-    const q28chips = document.querySelectorAll('#q28_section .chip.on');
-    data['שאלה_28_סימונים'] = Array.from(document.querySelectorAll('.card .chip.on')).filter(c => {
-      const names = ['מחלת לב','סרטן המעי הגס','סרטן שחלות','סרטן השד','סרטן ערמונית','סוכרת','כליות פוליציסטיות','טרשת נפוצה','ניוון שרירים','הנטינגטון','פרקינסון','אלצהיימר'];
-      return names.includes(c.textContent.trim());
-    }).map(c => c.textContent.trim()).join(', ');
-    data['שאלה_28_פירוט'] = document.getElementById('q28_detail').value;
+    const q28radio = document.querySelector('input[name="q28"]:checked');
+    data['שאלה_28'] = q28radio ? q28radio.value : '';
+    if (q28radio && q28radio.value === 'כן') {
+      const q28detailEl = document.getElementById('q28d');
+      data['שאלה_28_סימונים'] = Array.from(q28detailEl.querySelectorAll('.chip.on')).map(c => c.textContent.trim()).join(', ');
+      data['שאלה_28_פירוט'] = document.getElementById('q28_detail').value;
+    }
 
     data['תאריך'] = document.getElementById('sign_date').value;
     data['חתימה_מועמד_ראשי'] = sig1Pad.isEmpty() ? '' : sig1Pad.toDataURL();
@@ -1013,13 +1020,8 @@
     if (pastBody) html += sec('', 'ניתוחים, אשפוז ותרופות', pastBody);
 
     // Q28
-    if (data['שאלה_28_סימונים'] || data['שאלה_28_פירוט']) {
-      let q28body = `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">`;
-      (data['שאלה_28_סימונים']||'').split(', ').filter(Boolean).forEach(t => {
-        q28body += `<span style="background:#1d4ed8;color:white;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;">${t}</span>`;
-      });
-      q28body += `</div>`;
-      if (data['שאלה_28_פירוט']) q28body += `<div style="font-size:11px;color:#64748b;background:#f8fafc;padding:5px 9px;border-radius:6px;border-right:2px solid #bfdbfe;">${data['שאלה_28_פירוט']}</div>`;
+    if (data['שאלה_28']) {
+      let q28body = qRow(28, 'היסטוריה משפחתית (מחלות בקרב הורים / אחים)', data['שאלה_28'], data['שאלה_28_סימונים'], data['שאלה_28_פירוט']);
       html += sec('', 'היסטוריה משפחתית', q28body);
     }
 
@@ -1050,7 +1052,11 @@
   async function generatePDF(data) {
     const div = buildPrintContent(data);
     document.body.appendChild(div);
-    const canvas = await html2canvas(div, { scale:2, useCORS:true, backgroundColor:'#f1f5f9', logging:false });
+    // Wait for all signature images to fully load before rendering
+    await Promise.all(Array.from(div.querySelectorAll('img')).map(img =>
+      img.complete ? Promise.resolve() : new Promise(r => { img.onload = r; img.onerror = r; })
+    ));
+    const canvas = await html2canvas(div, { scale:2, useCORS:true, allowTaint:true, backgroundColor:'#f1f5f9', logging:false });
     document.body.removeChild(div);
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
@@ -1095,8 +1101,8 @@
       alert('נא לענות על שאלה 1 (ספורט מקצועי)'); return;
     }
 
-    // Validate Q2-Q27
-    for (let i = 2; i <= 27; i++) {
+    // Validate Q2-Q28
+    for (let i = 2; i <= 28; i++) {
       if (!document.querySelector(`input[name="q${i}"]:checked`)) {
         alert(`נא לענות על שאלה ${i}`); return;
       }
