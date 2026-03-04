@@ -11,27 +11,27 @@
 <style>
   :root {
     --primary: #1a56db;
-    --primary-light: #e8effc;
-    --primary-dark: #143faa;
-    --accent: #f59e0b;
-    --bg: #f0f4f8;
+    --primary-light: #dbeafe;
+    --primary-dark: #1e40af;
+    --accent: #1a56db;
+    --bg: #f0f7ff;
     --card: #ffffff;
-    --text: #1e293b;
-    --text-light: #64748b;
-    --border: #cbd5e1;
+    --text: #0f172a;
+    --text-light: #475569;
+    --border: #bfdbfe;
     --border-focus: #1a56db;
-    --success: #10b981;
+    --success: #1d4ed8;
     --error: #ef4444;
-    --radius: 12px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(26,86,219,0.08), 0 1px 2px rgba(26,86,219,0.04);
+    --shadow-md: 0 4px 12px rgba(26,86,219,0.12);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: 'Heebo', sans-serif;
-    background: var(--bg);
+    background: #f0f7ff;
     color: var(--text);
     line-height: 1.6;
     min-height: 100vh;
@@ -39,14 +39,15 @@
   }
 
   .header {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: #1a56db;
     color: white;
-    padding: 24px 20px;
+    padding: 20px 20px;
     text-align: center;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 2px 8px rgba(26,86,219,0.25);
+    border-bottom: 3px solid #1e40af;
   }
 
   .header h1 {
@@ -64,8 +65,8 @@
     position: fixed;
     top: 0;
     right: 0;
-    height: 4px;
-    background: var(--accent);
+    height: 3px;
+    background: #93c5fd;
     z-index: 200;
     transition: width 0.3s ease;
     border-radius: 0 0 0 2px;
@@ -83,19 +84,20 @@
     padding: 20px;
     margin-bottom: 16px;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(0,0,0,0.04);
+    border: 1px solid #dbeafe;
   }
 
   .section-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
-    color: var(--primary);
+    color: #1a56db;
     margin-bottom: 16px;
     padding-bottom: 8px;
-    border-bottom: 2px solid var(--primary-light);
+    border-bottom: 2px solid #dbeafe;
     display: flex;
     align-items: center;
     gap: 8px;
+    letter-spacing: 0.01em;
   }
 
   .section-title .icon {
@@ -132,12 +134,12 @@
   textarea {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
+    border: 1.5px solid #bfdbfe;
+    border-radius: 6px;
     font-family: 'Heebo', sans-serif;
     font-size: 0.95rem;
     color: var(--text);
-    background: #fafbfc;
+    background: #ffffff;
     transition: border-color 0.2s, box-shadow 0.2s;
     direction: rtl;
   }
@@ -154,7 +156,7 @@
   /* Question blocks */
   .question {
     padding: 14px 0;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #eff6ff;
   }
 
   .question:last-child { border-bottom: none; }
@@ -330,24 +332,24 @@
   }
 
   .btn-submit {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: #1a56db;
     color: white;
     border: none;
     padding: 14px 48px;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    border-radius: 50px;
+    border-radius: 6px;
     cursor: pointer;
     font-family: 'Heebo', sans-serif;
-    box-shadow: 0 4px 15px rgba(26,86,219,0.35);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(26,86,219,0.3);
+    transition: background 0.2s, box-shadow 0.2s;
     width: 100%;
     max-width: 320px;
   }
 
   .btn-submit:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(26,86,219,0.4);
+    background: #1e40af;
+    box-shadow: 0 4px 14px rgba(26,86,219,0.4);
   }
 
   .btn-submit:active { transform: translateY(0); }
@@ -403,7 +405,7 @@
   .success-icon {
     width: 80px;
     height: 80px;
-    background: var(--success);
+    background: #1a56db;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -585,7 +587,7 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">2</div>
-        <div class="q-text">האם הנך מעשן או עישנת במהלך השנתיים האחרונות?</div>
+        <div class="q-text">האם הנך מעשן או עישנת במהלך השנים האחרונות?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q2" value="כן" onchange="showEl('q2_detail')"> כן</label>
@@ -596,7 +598,7 @@
           <span>במידה וכן, כמה?</span>
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> סיגריות</label>
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> סיגרים</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> נרגילה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> מקטרת</label>
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> סיגריה אלקטרונית</label>
         </div>
         <div class="field-group" style="margin-top:8px;margin-right:38px">
@@ -610,7 +612,7 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">3</div>
-        <div class="q-text">האם הינך שותה כעת או שתית בעבר יותר מ-2 מנות ביום של משקה אלכוהולי?</div>
+        <div class="q-text">האם הינך שותה כיום או שתית בעבר יותר מ-2 מנות ביום של משקה אלכוהולי?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q3" value="כן" onchange="showEl('q3_detail')"> כן</label>
@@ -625,7 +627,7 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">4</div>
-        <div class="q-text">האם הינך צורך כעת או צרכת בעבר סמים כלשהם (אין להתייחס ליותר מ-6 שעות כל פעם)?</div>
+        <div class="q-text">האם צורך כעת או צרכת בעבר סמים מסוג כלשהו (אין להצהיר על שימוש חד פעמי)?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q4" value="כן" onchange="showEl('q4_detail')"> כן</label>
@@ -640,7 +642,7 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">5</div>
-        <div class="q-text">במהלך בירור רפואי או מחלה שטרם הסתיים: האם תופנית במהלך השנתיים האחרונות ו/או נמצא כיום במהלך הבדיקות כגון: קולונוסקופיה, גסטרוסקופיה, דם סמוי, קולפוסקופיה, ביופסיה/משטח, אקו לב, MRI, CT, PET?</div>
+        <div class="q-text">במהלך 5 השנים האחרונות האם פנית או הופנית לבדיקות, ייעוץ או טיפול רפואי? האם עברת בדיקות ו/או אבחנות רפואיות שטרם הסתיימו או טרם נקבע בגינן אבחנה סופית? (צילום, מיפוי, אקו לב, MRI, CT, אולטרסאונד, ביופסיה, בדיקת דם סמוי, קולונוסקופיה, גסטרוסקופיה)</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q5" value="כן" onchange="showEl('q5_detail')"> כן</label>
@@ -652,15 +654,15 @@
     </div>
   </div>
 
-  <!-- ===== HEALTH CONDITIONS (Q6) ===== -->
+  <!-- ===== HEALTH CONDITIONS (Q6-Q24) ===== -->
   <div class="section">
-    <div class="section-title"><span class="icon">⚕️</span> האם אובחנת כיום או בעבר, מחלה, תופעה, פגיעה הקשורה באחד או יותר מהפרטים הבאים</div>
+    <div class="section-title"><span class="icon">⚕️</span> האם אובחנת כיום או בעבר במחלה, תופעה או פגיעה הקשורה באחד מהפרטים הבאים</div>
 
-    <!-- Q6 - עיניים/עצמות -->
+    <!-- Q6 -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">6</div>
-        <div class="q-text">חוש עיניים: מערכת העצבים, עיוור, מרוּתק (רתוק), עיוורון חלקי, חוסר הכרה/עילפון, אפילפסיה, פרקינסון, טרשת נפוצה, שיתוק מוחין, אוטיזם?</div>
+        <div class="q-text">מוח ומערכת העצבים: מערכת העצבים, מוח, טרשת נפוצה, אירוע מוחי, תסמונת דאון, אוטיזם, גושה, ניוון שרירים, אפילפסיה, פרקינסון, רעד, פיגור שכלי, שיתוק מוחי, פוליו, נוירופתיה, מיגרנה, ירידה בזיכרון, הפרעת קשב וריכוז?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q6" value="כן" onchange="showEl('q6_detail')"> כן</label>
@@ -669,13 +671,23 @@
       <div id="q6_detail" class="hidden">
         <div class="q-sub-options">
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="מערכת העצבים"> מערכת העצבים</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="עיוורון"> עיוורון</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="חוסר הכרה"> חוסר הכרה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="מוח"> מוח</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="טרשת נפוצה"> טרשת נפוצה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="אירוע מוחי"> אירוע מוחי</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="תסמונת דאון"> תסמונת דאון</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="אוטיזם"> אוטיזם</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="גושה"> גושה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="ניוון שרירים"> ניוון שרירים</label>
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="אפילפסיה"> אפילפסיה</label>
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="פרקינסון"> פרקינסון</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="טרשת נפוצה"> טרשת נפוצה</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="שיתוק מוחין"> שיתוק מוחין</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="אוטיזם"> אוטיזם</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="רעד"> רעד</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="פיגור שכלי"> פיגור שכלי</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="שיתוק מוחי"> שיתוק מוחי</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="פוליו"> פוליו</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="נוירופתיה"> נוירופתיה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="מיגרנה"> מיגרנה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="ירידה בזיכרון"> ירידה בזיכרון</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="הפרעת קשב וריכוז"> הפרעת קשב וריכוז</label>
         </div>
         <div class="q-detail" style="margin-top:8px">
           <textarea placeholder="פרט/י..."></textarea>
@@ -683,11 +695,11 @@
       </div>
     </div>
 
-    <!-- Q7 - לב -->
+    <!-- Q7 -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">7</div>
-        <div class="q-text">מחלת לב כלשהי: כאב בחזה (4), מחלת דם (4), מחלה ריאתית (4), אנמיה (4), מפרצת AVM, כפיות קרישה (5), PVD, DVT (5), סוכרת/אינסולין/סיפקו הוריד הרגליים, חספנה בנורי/טוקוריס (קודקוס), ITP/טרומבוציטופניה, מוסלימת מינור פלסטית מינור?</div>
+        <div class="q-text">לב, מחלות דם וכלי דם: לב, מחלת דם, תסחיף ריאתי, אנמיה, מפרצת / AVM, הפרעות קרישה, DVT, PVD, דליות / אי ספיקה בוורידי הרגליים, חסימה בעורקי הצוואר, ITP / טרומבוציטופניה, תלסמיה מינור, תלסמיה מייג'ור?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q7" value="כן" onchange="showEl('q7_detail')"> כן</label>
@@ -695,14 +707,19 @@
       </div>
       <div id="q7_detail" class="hidden">
         <div class="q-sub-options">
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="מחלת לב"> מחלת לב</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="כאב בחזה"> כאב בחזה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="לב"> לב</label>
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="מחלת דם"> מחלת דם</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="תסחיף ריאתי"> תסחיף ריאתי</label>
           <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="אנמיה"> אנמיה</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="מפרצת AVM"> מפרצת AVM</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="סוכרת"> סוכרת</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="PVD/DVT"> PVD/DVT</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="ITP"> ITP</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="מפרצת / AVM"> מפרצת / AVM</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="הפרעות קרישה"> הפרעות קרישה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="DVT"> DVT</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="PVD"> PVD</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="דליות"> דליות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="חסימה בעורקי הצוואר"> חסימה בעורקי הצוואר</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="ITP / טרומבוציטופניה"> ITP / טרומבוציטופניה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="תלסמיה מינור"> תלסמיה מינור</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="תלסמיה מייג'ור"> תלסמיה מייג'ור</label>
         </div>
         <div class="q-detail" style="margin-top:8px">
           <textarea placeholder="פרט/י..."></textarea>
@@ -714,7 +731,7 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">8</div>
-        <div class="q-text">מערכת העפרנית/מחלת נפשות לרבות דיכאון ו/חרדה (7)?</div>
+        <div class="q-text">בעיה / הפרעה / מחלה נפשית לרבות דיכאון וחרדה?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q8" value="כן" onchange="showEl('q8_detail')"> כן</label>
@@ -729,155 +746,18 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">9</div>
-        <div class="q-text">הממצאה ליפופ רחיצת או דיאסטה בעבר 10 השנים האחרונות בשל הבעיות הבאות: עיוור דם (6), מחלת כלי דם לרבות מחלת הלב (8), סרטנוידים (9), נוירגילוידים (9)?</div>
+        <div class="q-text">האם הומלץ לך על טיפול תרופתי או דיאטטי ב-10 השנים האחרונות בשל: לחץ דם, סוכרת (מכל סוג לרבות סוכרת הריון), כולסטרול, טריגליצרידים?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q9" value="כן" onchange="showEl('q9_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q9" value="לא" onchange="hideEl('q9_detail')"> לא</label>
       </div>
-      <div id="q9_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q10 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">10</div>
-        <div class="q-text">אורתופדיה וגלמות: מחלת חוליות/דם (נדירות) (10), מחלות יותר חריף (שרירי-רצועתי) (10)?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q10" value="כן" onchange="showEl('q10_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q10" value="לא" onchange="hideEl('q10_detail')"> לא</label>
-      </div>
-      <div id="q10_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q11 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">11</div>
-        <div class="q-text">סימון תחומים שמיים: מחלת המעיים (סוקול)/ליקוי מאזניים, ניתוח שפירים (11), ניתוח סרטן סטוריום?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q11" value="כן" onchange="showEl('q11_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q11" value="לא" onchange="hideEl('q11_detail')"> לא</label>
-      </div>
-      <div id="q11_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q12 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">12</div>
-        <div class="q-text">מע' עיכול: קיבה (12), נשים (12), שחלות (12), אבנים בכיס מרה (12), לבלב (12), מחלת כבד (13), פסוריאזיס/קולגן/קרטיניזציס (12), צניחת בטנים?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q12" value="כן" onchange="showEl('q12_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q12" value="לא" onchange="hideEl('q12_detail')"> לא</label>
-      </div>
-      <div id="q12_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q13 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">13</div>
-        <div class="q-text">מע' השתן/אורולוגיה: כליות, שלפוחית השתן, ערמונית/פרוסטטה (לקטגנותל), חזרה על שאלות הממשל (כן = פשוט על שאלות הממשל הקודם)?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q13" value="כן" onchange="showEl('q13_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q13" value="לא" onchange="hideEl('q13_detail')"> לא</label>
-      </div>
-      <div id="q13_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q14 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">14</div>
-        <div class="q-text">דום שינה/אפנאות/ברקפס (14), מחלת ראות שמיעתית (COPD/אמפיזמה)?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q14" value="כן" onchange="showEl('q14_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q14" value="לא" onchange="hideEl('q14_detail')"> לא</label>
-      </div>
-      <div id="q14_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q15 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">15</div>
-        <div class="q-text">מחלות זיהומיות/דלקתיות מו' חיסון: איידס/נשא HIV, שחפת, סרקואידוזיס, סקלרודרמה?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q15" value="כן" onchange="showEl('q15_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q15" value="לא" onchange="hideEl('q15_detail')"> לא</label>
-      </div>
-      <div id="q15_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q16 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">16</div>
-        <div class="q-text">כליות ודרכי השתן (15): מערכת/דרכי שימוש (15), שלפוחית שתן (15)?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q16" value="כן" onchange="showEl('q16_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q16" value="לא" onchange="hideEl('q16_detail')"> לא</label>
-      </div>
-      <div id="q16_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q17 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">17</div>
-        <div class="q-text">גידול/בלוטה: סרטן, גוש, ספירה שאלו, סרטנת אחר?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q17" value="כן" onchange="showEl('q17_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q17" value="לא" onchange="hideEl('q17_detail')"> לא</label>
-      </div>
-      <div id="q17_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
-      </div>
-    </div>
-
-    <!-- Q18 -->
-    <div class="question">
-      <div class="q-header">
-        <div class="q-number">18</div>
-        <div class="q-text">האם המצב הקיים: מחלות/התוויות/אסתמאטיים: FMF (16), מחלת קרוהן/קוליטיס/צליאק, מחלת מפרקים/דלקת פרקים, אוסטיאופורוזיה?</div>
-      </div>
-      <div class="q-options">
-        <label class="radio-btn"><input type="radio" name="q18" value="כן" onchange="showEl('q18_detail')"> כן</label>
-        <label class="radio-btn"><input type="radio" name="q18" value="לא" onchange="hideEl('q18_detail')"> לא</label>
-      </div>
-      <div id="q18_detail" class="hidden">
+      <div id="q9_detail" class="hidden">
         <div class="q-sub-options">
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="FMF"> FMF</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="קרוהן"> קרוהן</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="קוליטיס"> קוליטיס</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="צליאק"> צליאק</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="דלקת פרקים"> דלקת פרקים</label>
-          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="אוסטיאופורוזיס"> אוסטיאופורוזיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q9_items" value="לחץ דם"> לחץ דם</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q9_items" value="סוכרת"> סוכרת</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q9_items" value="כולסטרול"> כולסטרול</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q9_items" value="טריגליצרידים"> טריגליצרידים</label>
         </div>
         <div class="q-detail" style="margin-top:8px">
           <textarea placeholder="פרט/י..."></textarea>
@@ -885,97 +765,435 @@
       </div>
     </div>
 
-    <!-- Q19-28: Yes/No + detail questions -->
+    <!-- Q10 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">10</div>
+        <div class="q-text">אנדוקרינולוגיה ובלוטות: בלוטת התריס / מגן (תירואיד), בלוטת יותרת התריס (פארא-תירואיד), בלוטת יותרת המוח, אדרנל, הפרעות בהפרשת פרולקטין, הזעת יתר?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q10" value="כן" onchange="showEl('q10_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q10" value="לא" onchange="hideEl('q10_detail')"> לא</label>
+      </div>
+      <div id="q10_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q10_items" value="בלוטת התריס"> בלוטת התריס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q10_items" value="בלוטת יותרת התריס"> בלוטת יותרת התריס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q10_items" value="בלוטת יותרת המוח"> בלוטת יותרת המוח</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q10_items" value="אדרנל"> אדרנל</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q10_items" value="הפרעות פרולקטין"> הפרעות פרולקטין</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q10_items" value="הזעת יתר"> הזעת יתר</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">11</div>
+        <div class="q-text">סרטן וגידולים: מחלה ממארת (סרטן) / גידולים ממאירים, גידולים שפירים, גידולים טרום סרטניים?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q11" value="כן" onchange="showEl('q11_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q11" value="לא" onchange="hideEl('q11_detail')"> לא</label>
+      </div>
+      <div id="q11_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q11_items" value="גידול ממאיר / סרטן"> גידול ממאיר / סרטן</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q11_items" value="גידול שפיר"> גידול שפיר</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q11_items" value="גידול טרום סרטני"> גידול טרום סרטני</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">12</div>
+        <div class="q-text">מערכת העיכול: קיבה, מעיים, ושט, טחול, אבנים בכיס מרה, לבלב, מחלת כבד, צהבת, כבד שומני, פיסטולה, קרוהן / קוליטיס / פרוקטיטיס, צניחת פי טבעת (רקטוצלה), טחורים, פיסורה?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q12" value="כן" onchange="showEl('q12_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q12" value="לא" onchange="hideEl('q12_detail')"> לא</label>
+      </div>
+      <div id="q12_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="קיבה"> קיבה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="מעיים"> מעיים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="ושט"> ושט</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="טחול"> טחול</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="אבנים בכיס מרה"> אבנים בכיס מרה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="לבלב"> לבלב</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="מחלת כבד"> מחלת כבד</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="צהבת"> צהבת</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="כבד שומני"> כבד שומני</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="פיסטולה"> פיסטולה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="קרוהן / קוליטיס"> קרוהן / קוליטיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="טחורים"> טחורים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q12_items" value="פיסורה"> פיסורה</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+        <div style="margin:10px 0 0 38px">
+          <label style="font-size:0.85rem;font-weight:600;">האם עבר ניתוח?</label>
+          <div class="q-options" style="margin:4px 0">
+            <label class="radio-btn"><input type="radio" name="q12_surgery" value="כן"> כן</label>
+            <label class="radio-btn"><input type="radio" name="q12_surgery" value="לא"> לא</label>
+          </div>
+          <label style="font-size:0.85rem;">מס' שנים שחלפו מהניתוח:</label>
+          <input type="text" placeholder="מספר שנים" style="width:120px;margin-top:4px;">
+          <label style="font-size:0.85rem;margin-top:8px;display:block;">האם הבעיה חלפה?</label>
+          <div class="q-options" style="margin:4px 0">
+            <label class="radio-btn"><input type="radio" name="q12_resolved" value="כן"> כן</label>
+            <label class="radio-btn"><input type="radio" name="q12_resolved" value="לא"> לא</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">13</div>
+        <div class="q-text">ריאות ונשימה: אסתמה / ברונכיט, מחלת ריאות חסימתית (COPD / אמפיזמה), סיסטיק פיברוזיס, דום נשימה בשינה?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q13" value="כן" onchange="showEl('q13_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q13" value="לא" onchange="hideEl('q13_detail')"> לא</label>
+      </div>
+      <div id="q13_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q13_items" value="אסתמה / ברונכיט"> אסתמה / ברונכיט</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q13_items" value="COPD / אמפיזמה"> COPD / אמפיזמה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q13_items" value="סיסטיק פיברוזיס"> סיסטיק פיברוזיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q13_items" value="דום נשימה בשינה"> דום נשימה בשינה</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">14</div>
+        <div class="q-text">מחלות זיהומיות / דלקתיות / מחלות מין: איידס / נשאות HIV, שחפת, סרקואידוזיס, סקלרודרמה?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q14" value="כן" onchange="showEl('q14_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q14" value="לא" onchange="hideEl('q14_detail')"> לא</label>
+      </div>
+      <div id="q14_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q14_items" value="איידס / HIV"> איידס / HIV</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q14_items" value="שחפת"> שחפת</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q14_items" value="סרקואידוזיס"> סרקואידוזיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q14_items" value="סקלרודרמה"> סקלרודרמה</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">15</div>
+        <div class="q-text">כליות ודרכי שתן: כליות, מערכת / דרכי השתן, שלפוחית שתן?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q15" value="כן" onchange="showEl('q15_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q15" value="לא" onchange="hideEl('q15_detail')"> לא</label>
+      </div>
+      <div id="q15_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q15_items" value="כליות"> כליות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q15_items" value="דרכי השתן"> דרכי השתן</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q15_items" value="שלפוחית שתן"> שלפוחית שתן</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">16</div>
+        <div class="q-text">הרניה / בקע: טבורי, מפשעה ימין, מפשעה שמאל, סרעפת, אחר?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q16" value="כן" onchange="showEl('q16_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q16" value="לא" onchange="hideEl('q16_detail')"> לא</label>
+      </div>
+      <div id="q16_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q16_items" value="טבורי"> טבורי</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q16_items" value="מפשעה ימין"> מפשעה ימין</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q16_items" value="מפשעה שמאל"> מפשעה שמאל</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q16_items" value="סרעפת"> סרעפת</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+        <div style="margin:10px 0 0 38px">
+          <label style="font-size:0.85rem;font-weight:600;">האם בוצע ניתוח?</label>
+          <div class="q-options" style="margin:4px 0">
+            <label class="radio-btn"><input type="radio" name="q16_surgery" value="כן"> כן</label>
+            <label class="radio-btn"><input type="radio" name="q16_surgery" value="לא"> לא</label>
+          </div>
+          <label style="font-size:0.85rem;">מס' שנים שחלפו מהניתוח:</label>
+          <input type="text" placeholder="מספר שנים" style="width:120px;margin-top:4px;">
+          <label style="font-size:0.85rem;margin-top:8px;display:block;">האם המצב תקין?</label>
+          <div class="q-options" style="margin:4px 0">
+            <label class="radio-btn"><input type="radio" name="q16_resolved" value="כן"> כן</label>
+            <label class="radio-btn"><input type="radio" name="q16_resolved" value="לא"> לא</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">17</div>
+        <div class="q-text">ראומטולוגיה ומחלות אוטואימוניות: פיברומיאלגיה, מחלת מפרקים / דלקת פרקים, גאוט / היפראוריצמיה, לופוס (זאבת), FMF, תסמונת העייפות הכרונית?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q17" value="כן" onchange="showEl('q17_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q17" value="לא" onchange="hideEl('q17_detail')"> לא</label>
+      </div>
+      <div id="q17_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q17_items" value="פיברומיאלגיה"> פיברומיאלגיה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q17_items" value="דלקת פרקים"> דלקת פרקים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q17_items" value="גאוט"> גאוט</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q17_items" value="לופוס"> לופוס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q17_items" value="FMF"> FMF</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q17_items" value="עייפות כרונית"> עייפות כרונית</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">18</div>
+        <div class="q-text">אורתופדיה: גב ועמוד שדרה, ירידה בצפיפות העצם, שברים, ברכיים, מרפקים, מחלת עצמות / שלד, כתפיים, קרסוליים, מפרקי ירכיים, CTS (ימין / שמאל), הלוקס ולגוס, אצבע הדק?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q18" value="כן" onchange="showEl('q18_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q18" value="לא" onchange="hideEl('q18_detail')"> לא</label>
+      </div>
+      <div id="q18_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="גב ועמוד שדרה"> גב ועמוד שדרה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="ירידה בצפיפות העצם"> ירידה בצפיפות העצם</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="שברים"> שברים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="ברכיים"> ברכיים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="מרפקים"> מרפקים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="מחלת עצמות"> מחלת עצמות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="כתפיים"> כתפיים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="קרסוליים"> קרסוליים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="מפרקי ירכיים"> מפרקי ירכיים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="CTS"> CTS</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="הלוקס ולגוס"> הלוקס ולגוס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="אצבע הדק"> אצבע הדק</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q19 -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">19</div>
-        <div class="q-text">מחלת עור/שחלה: בלוטים (18), בלוטות הלימפה (18), מחלת כליות (18), CTS (18), כיס שמאל?</div>
+        <div class="q-text">עיניים: קוצר ראיה (עדשות 8 ומעלה), מחלה / בעיה בעיניים, אובאיטיס, עיוורון?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q19" value="כן" onchange="showEl('q19_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q19" value="לא" onchange="hideEl('q19_detail')"> לא</label>
       </div>
-      <div id="q19_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
+      <div id="q19_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q19_items" value="קוצר ראיה (8+)"> קוצר ראיה (8+)</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q19_items" value="מחלת עיניים"> מחלת עיניים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q19_items" value="אובאיטיס"> אובאיטיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q19_items" value="עיוורון"> עיוורון</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
       </div>
     </div>
 
+    <!-- Q20 -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">20</div>
-        <div class="q-text">עיניים: קוצר ראיה (מעל 8 מעלות), מחלות/בעיות בעיניים (21), אוכוניטיס, עיוורון (21)?</div>
+        <div class="q-text">אף / אוזן / גרון: אוזניים, ליקוי שמיעה / חרשות, מחלת מנייר, ורטיגו, אף, גרון, בלוטת הרוק, מיתרי הקול?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q20" value="כן" onchange="showEl('q20_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q20" value="לא" onchange="hideEl('q20_detail')"> לא</label>
       </div>
-      <div id="q20_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
+      <div id="q20_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="אוזניים"> אוזניים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="ליקוי שמיעה"> ליקוי שמיעה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="מחלת מנייר"> מחלת מנייר</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="ורטיגו"> ורטיגו</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="אף"> אף</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="גרון"> גרון</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="בלוטת הרוק"> בלוטת הרוק</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q20_items" value="מיתרי הקול"> מיתרי הקול</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
       </div>
     </div>
 
+    <!-- Q21 -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">21</div>
-        <div class="q-text">שמיעה/אוזניים: לקויות שמיעה/חירשות (22), מחלת חירשות (22), מחלת רינון וגו (22)?</div>
+        <div class="q-text">עור ומין: מחלת עור, מחלת מין, ריבוי נקודות חן הדורשות מעקב רופא, גידול / נגעי עור, פסוריאזיס, קונדילומה, פמפיגוס וולגריס, מיקוזיס פונגואידס, לופוס עור?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q21" value="כן" onchange="showEl('q21_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q21" value="לא" onchange="hideEl('q21_detail')"> לא</label>
       </div>
-      <div id="q21_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
+      <div id="q21_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q21_items" value="מחלת עור"> מחלת עור</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q21_items" value="מחלת מין"> מחלת מין</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q21_items" value="נגעי עור"> נגעי עור</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q21_items" value="פסוריאזיס"> פסוריאזיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q21_items" value="קונדילומה"> קונדילומה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q21_items" value="פמפיגוס וולגריס"> פמפיגוס וולגריס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q21_items" value="לופוס עור"> לופוס עור</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
       </div>
     </div>
 
+    <!-- Q22 - Men -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">22</div>
-        <div class="q-text">בלוטת התריס (המקו) (22), מחלת חריגת (20), מחלות חלבון (20), כל מחלות הון שקפה (מפורטת שהן עולם) (20), כלנגוי/בלט שר (20)?</div>
+        <div class="q-text">שאלון גברים (מגיל 18): בעיות פריון, בלוטת ערמונית, אשכים, איבר מין, הידרוצלה, וריקוצלה, אין אונות?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q22" value="כן" onchange="showEl('q22_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q22" value="לא" onchange="hideEl('q22_detail')"> לא</label>
+        <label class="radio-btn"><input type="radio" name="q22" value="לא רלוונטי"> לא רלוונטי</label>
       </div>
-      <div id="q22_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
+      <div id="q22_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q22_items" value="בעיות פריון"> בעיות פריון</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q22_items" value="בלוטת ערמונית"> בלוטת ערמונית</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q22_items" value="אשכים"> אשכים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q22_items" value="איבר מין"> איבר מין</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q22_items" value="הידרוצלה"> הידרוצלה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q22_items" value="וריקוצלה"> וריקוצלה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q22_items" value="אין אונות"> אין אונות</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
       </div>
     </div>
 
+    <!-- Q23 - Women -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">23</div>
-        <div class="q-text">שאלון בריאות (18): נערית פריון (23), אספנים (23), גידורי עבודה (23), היריון/הפלות (24), פיברואידי רחם/בדיקות פאפ לא תקינות (24), שדיים?</div>
+        <div class="q-text">שאלון נשים (מגיל 14): רחם, שחלות / חצוצרות, צוואר רחם / בדיקת פאפ לא תקינה, מערכת גינקולוגית, אנדומטריוזיס, הידבקויות, דלקות אגן חוזרות, הפלות חוזרות (מעל 3), ניתוח הגדלת / הרמת חזה עם שתלים, בעיות / טיפולי פריון, ניתוח קיסרי, גידולים בשדיים?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q23" value="כן" onchange="showEl('q23_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q23" value="לא" onchange="hideEl('q23_detail')"> לא</label>
+        <label class="radio-btn"><input type="radio" name="q23" value="לא רלוונטי"> לא רלוונטי</label>
       </div>
-      <div id="q23_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י..."></textarea>
+      <div id="q23_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="רחם"> רחם</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="שחלות / חצוצרות"> שחלות / חצוצרות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="צוואר רחם / פאפ לא תקין"> צוואר רחם / פאפ לא תקין</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="אנדומטריוזיס"> אנדומטריוזיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="הידבקויות"> הידבקויות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="דלקות אגן חוזרות"> דלקות אגן חוזרות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="הפלות חוזרות"> הפלות חוזרות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="ניתוח חזה עם שתלים"> ניתוח חזה עם שתלים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="טיפולי פריון"> טיפולי פריון</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="ניתוח קיסרי"> ניתוח קיסרי</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q23_items" value="גידולים בשדיים"> גידולים בשדיים</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+        <div style="margin:10px 0 0 38px">
+          <label style="font-size:0.85rem;font-weight:600;">האם את בהריון כעת?</label>
+          <div class="q-options" style="margin:4px 0">
+            <label class="radio-btn"><input type="radio" name="q23_pregnant" value="כן"> כן</label>
+            <label class="radio-btn"><input type="radio" name="q23_pregnant" value="לא"> לא</label>
+          </div>
+        </div>
       </div>
     </div>
 
+    <!-- Q24 - Children -->
     <div class="question">
       <div class="q-header">
         <div class="q-number">24</div>
-        <div class="q-text">גינקולוגיה/אורולוגיה (24): הדבקויות, דליות/אגן חזקיות, הפליות חוזרות (מעל 3), גידולים בשחלות (24), מומי לידה/הפלות חזרה עם שימוש בשמגלים, פוריות/טיפולי פוריות, ניתוח לידתי?</div>
+        <div class="q-text">שאלון ילדים (עד גיל 18): שפה / שמיעה, חירשות, עיכוב בהתפתחות, הפרעות גדילה, מולד פג, עקמת פין, הידרוצלה, לשון קשורה, אשר טמיר?</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q24" value="כן" onchange="showEl('q24_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q24" value="לא" onchange="hideEl('q24_detail')"> לא</label>
+        <label class="radio-btn"><input type="radio" name="q24" value="לא רלוונטי"> לא רלוונטי</label>
       </div>
       <div id="q24_detail" class="hidden">
-        <div class="q-detail">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="שפה / שמיעה"> שפה / שמיעה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="חירשות"> חירשות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="עיכוב בהתפתחות"> עיכוב בהתפתחות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="הפרעות גדילה"> הפרעות גדילה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="מולד פג"> מולד פג</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="עקמת פין"> עקמת פין</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="הידרוצלה"> הידרוצלה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="לשון קשורה"> לשון קשורה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q24_items" value="אשר טמיר"> אשר טמיר</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
           <textarea placeholder="פרט/י..."></textarea>
         </div>
-        <div style="margin:8px 0 0 38px">
-          <label>לשון קיסרי: קיצות פי:</label>
-          <input type="text" placeholder="פרטי הידרוצלה (23)">
-        </div>
-        <div style="margin:8px 0 0 38px">
-          <label>אשר מייד: האם הבעיה נפתרה?</label>
-          <div class="q-options">
+        <div style="margin:10px 0 0 38px">
+          <label style="font-size:0.85rem;font-weight:600;">האם נותח?</label>
+          <div class="q-options" style="margin:4px 0">
+            <label class="radio-btn"><input type="radio" name="q24_surgery" value="כן"> כן</label>
+            <label class="radio-btn"><input type="radio" name="q24_surgery" value="לא"> לא</label>
+          </div>
+          <label style="font-size:0.85rem;font-weight:600;margin-top:8px;display:block;">האם הבעיה נפתרה?</label>
+          <div class="q-options" style="margin:4px 0">
             <label class="radio-btn"><input type="radio" name="q24_resolved" value="כן"> כן</label>
             <label class="radio-btn"><input type="radio" name="q24_resolved" value="לא"> לא</label>
           </div>
@@ -986,12 +1204,12 @@
 
   <!-- ===== PAST MEDICAL HISTORY ===== -->
   <div class="section">
-    <div class="section-title"><span class="icon">📂</span> שאלות הבאות מתייחסות רק למצבים רפואיים שעליהם לא נשאלת/הוצהרת בשאלות קודמות</div>
+    <div class="section-title"><span class="icon">📂</span> השאלות הבאות מתייחסות רק למצבים רפואיים עליהם לא נשאלת / הצהרת בשאלות קודמות</div>
 
     <div class="question">
       <div class="q-header">
         <div class="q-number">25</div>
-        <div class="q-text">האם אכרעה ריפויה או ייעוץ לך לעבור ניתוח במהלך 5 השנים האחרונות (25)? אין תשובה על שאלה זו אם הניתוח בוצע בעיה רפואית עליה תשובה בשאלות קודמות.</div>
+        <div class="q-text">האם עברת ניתוח או יעצו לך לעבור ניתוח במהלך 5 השנים האחרונות? אין צורך לענות בחיוב אם הניתוח בוצע בשל בעיה רפואית עליה השבת בשאלות קודמות.</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q25" value="כן" onchange="showEl('q25_detail')"> כן</label>
@@ -1005,7 +1223,7 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">26</div>
-        <div class="q-text">האם אושפזת תועל מ-3 ימים ב-5 השנים האחרונות (25)? אין תשובה על שאלה זו אם האשפוז בוצע בעיה רפואית עליה תשובה בשאלות קודמות.</div>
+        <div class="q-text">האם אושפזת מעל 3 ימים ב-5 השנים האחרונות? אין צורך לענות בחיוב אם האשפוז בוצע בשל בעיה רפואית עליה השבת בשאלות קודמות.</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q26" value="כן" onchange="showEl('q26_detail')"> כן</label>
@@ -1019,34 +1237,39 @@
     <div class="question">
       <div class="q-header">
         <div class="q-number">27</div>
-        <div class="q-text">האם טופלת ו/או מטופל כעת בתרופות קבועות או תומכות לך על טיפול/ניתוק קבוע במשך 5 השנים האחרונות? אין תשובה על שאלה זו אם הטיפול הרופאים נעלה על עליה תשובה בשאלות קודמות.</div>
+        <div class="q-text">האם טופלת או מטופל כעת בתרופות קבועות או הומלץ לך על טיפול תרופתי קבוע במהלך 5 השנים האחרונות? אין צורך לענות בחיוב אם הטיפול התרופתי ניתן בשל בעיה רפואית עליה השבת בשאלות קודמות.</div>
       </div>
       <div class="q-options">
         <label class="radio-btn"><input type="radio" name="q27" value="כן" onchange="showEl('q27_detail')"> כן</label>
         <label class="radio-btn"><input type="radio" name="q27" value="לא" onchange="hideEl('q27_detail')"> לא</label>
       </div>
       <div id="q27_detail" class="q-detail hidden">
-        <textarea placeholder="פרט/י את שם התרופה, מינון, ומשך הטיפול"></textarea>
+        <label style="font-size:0.85rem;">שם התרופה:</label>
+        <textarea placeholder="שם התרופה, מינון, משך הטיפול"></textarea>
       </div>
     </div>
   </div>
 
   <!-- ===== FAMILY HISTORY (Q28) ===== -->
   <div class="section">
-    <div class="section-title"><span class="icon">👨‍👩‍👧‍👦</span> שאלה נוספת לנחשבים כיסוי קצר אור טופ/קצר לחיים</div>
+    <div class="section-title"><span class="icon">👨‍👩‍👧‍👦</span> שאלה נוספת לרוכשים כיסוי קרן אור טופ / קרן לחיים</div>
 
     <div class="question">
       <div class="q-header">
         <div class="q-number">28</div>
-        <div class="q-text">היסטוריה משפחתית: למיטב ידיעתך האם בקרב אחד מקרוביך (אב/אם/אחיות) אובחנו אחת או יותר מהמחלות הבאות?</div>
+        <div class="q-text">היסטוריה משפחתית: למיטב ידיעתך האם בקרב אחד מקרוביך (אב / אם / אח / אחות) אובחנה אחת או יותר מהמחלות הבאות?</div>
       </div>
       <div class="q-sub-options" style="margin-top:8px">
         <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="מחלת לב"> מחלת לב</label>
-        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן מעי הגס"> סרטן מעי הגס</label>
-        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן שלפוחית"> סרטן שלפוחית</label>
-        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן העשק"> סרטן העשק</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן המעי הגס"> סרטן המעי הגס</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן שחלות"> סרטן שחלות</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן השד"> סרטן השד</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן ערמונית"> סרטן ערמונית</label>
         <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סוכרת"> סוכרת</label>
         <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="כליות פוליציסטיות"> כליות פוליציסטיות</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="טרשת נפוצה"> טרשת נפוצה</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="ניוון שרירים"> ניוון שרירים</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="הנטינגטון"> הנטינגטון</label>
         <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="פרקינסון"> פרקינסון</label>
         <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="אלצהיימר"> אלצהיימר</label>
       </div>
