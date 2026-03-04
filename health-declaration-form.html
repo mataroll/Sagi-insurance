@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הצהרת בריאות מבוגרים</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-light: #e8effc;
+    --primary-dark: #143faa;
+    --accent: #f59e0b;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #cbd5e1;
+    --border-focus: #1a56db;
+    --success: #10b981;
+    --error: #ef4444;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 100px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 24px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-md);
+  }
+
+  .header h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .header p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 4px;
+    background: var(--accent);
+    z-index: 200;
+    transition: width 0.3s ease;
+    border-radius: 0 0 0 2px;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title .icon {
+    font-size: 1.2rem;
+  }
+
+  .field-group {
+    margin-bottom: 16px;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: #fafbfc;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    direction: rtl;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(26,86,219,0.12);
+    background: white;
+  }
+
+  textarea { resize: vertical; min-height: 60px; }
+
+  /* Question blocks */
+  .question {
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .question:last-child { border-bottom: none; }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .q-number {
+    background: var(--primary);
+    color: white;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .q-text {
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .q-options {
+    display: flex;
+    gap: 12px;
+    margin: 8px 0 8px 38px;
+  }
+
+  .radio-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .radio-btn input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+
+  .q-detail {
+    margin: 8px 0 0 38px;
+  }
+
+  .q-detail textarea {
+    font-size: 0.88rem;
+  }
+
+  .q-sub-options {
+    margin: 8px 0 0 38px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .checkbox-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    user-select: none;
+  }
+
+  .checkbox-tag:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .checkbox-tag input {
+    display: none;
+  }
+
+  .checkbox-tag.checked {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  /* Toggle for second applicant */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .toggle {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    background: var(--border);
+    border-radius: 13px;
+    cursor: pointer;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+
+  .toggle.active { background: var(--primary); }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    right: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .toggle.active::after {
+    transform: translateX(-22px);
+  }
+
+  /* Signature */
+  .sig-container {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 8px;
+    background: white;
+    position: relative;
+  }
+
+  .sig-container canvas {
+    width: 100%;
+    height: 150px;
+    display: block;
+    border-radius: 8px;
+    touch-action: none;
+  }
+
+  .sig-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+
+  .btn-clear-sig {
+    font-size: 0.8rem;
+    color: var(--error);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+    padding: 4px 8px;
+  }
+
+  /* Submit */
+  .submit-section {
+    text-align: center;
+    padding: 24px 0;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 14px 48px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+    box-shadow: 0 4px 15px rgba(26,86,219,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,86,219,0.4);
+  }
+
+  .btn-submit:active { transform: translateY(0); }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Loading overlay */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .loading-overlay.show { display: flex; }
+
+  .loading-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--primary-light);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .success-screen.show { display: block; }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2.5rem;
+    color: white;
+  }
+
+  /* Validation */
+  .field-error {
+    border-color: var(--error) !important;
+  }
+
+  .error-msg {
+    color: var(--error);
+    font-size: 0.8rem;
+    margin-top: 2px;
+  }
+
+  /* Smoking quantity inline */
+  .smoking-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0 38px;
+    flex-wrap: wrap;
+  }
+
+  .smoking-detail span { font-size: 0.88rem; }
+
+  .smoking-detail input {
+    width: 70px;
+    text-align: center;
+  }
+
+  .hidden { display: none !important; }
+
+  .note-text {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  /* Collapsible secondary applicant */
+  .applicant2-section {
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .applicant2-section.open {
+    max-height: 5000px;
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="header">
+  <h1>ה. שאלון בריאות מבוגרים</h1>
+  <p>הצהרת בריאות — מלא/י את הטופס ולחץ/י שלח</p>
+</div>
+
+<div class="container" id="formContainer">
+
+  <!-- ===== APPLICANT 1 ===== -->
+  <div class="section">
+    <div class="section-title"><span class="icon">👤</span> מועמד ראשי</div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>שם פרטי *</label>
+        <input type="text" id="a1_first" required>
+      </div>
+      <div class="field-group">
+        <label>שם משפחה *</label>
+        <input type="text" id="a1_last" required>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>גובה (מ')</label>
+        <input type="text" id="a1_height" placeholder='למשל 1.75'>
+      </div>
+      <div class="field-group">
+        <label>משקל (ק"ג)</label>
+        <input type="text" id="a1_weight" placeholder='למשל 70'>
+      </div>
+    </div>
+    <div class="field-group">
+      <label>האם חל שינוי במשקל בשנתיים האחרונות?</label>
+      <div class="q-options" style="margin:8px 0">
+        <label class="radio-btn"><input type="radio" name="a1_weight_change" value="כן"> כן</label>
+        <label class="radio-btn"><input type="radio" name="a1_weight_change" value="לא"> לא</label>
+      </div>
+    </div>
+    <div class="field-group">
+      <label>סיבה (אם כן)</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="a1_weight_reason" value="עלייה"> עלייה</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="a1_weight_reason" value="ירידה"> ירידה</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="a1_weight_reason" value="כמה ק&quot;ג"> כמה ק"ג</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="a1_weight_reason" value="ניתוח"> ניתוח</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="a1_weight_reason" value="דיאטה"> דיאטה</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="a1_weight_reason" value="הריון"> הריון</label>
+      </div>
+    </div>
+    <div class="field-group hidden" id="a1_pregnancy_field">
+      <label>משקל טרם ההריון (ק"ג)</label>
+      <input type="text" id="a1_preg_weight">
+    </div>
+  </div>
+
+  <!-- ===== TOGGLE SECOND APPLICANT ===== -->
+  <div class="section">
+    <div class="toggle-row">
+      <div class="toggle" id="toggleApplicant2" onclick="toggleSecondApplicant()"></div>
+      <label style="margin:0;font-weight:600;cursor:pointer" onclick="toggleSecondApplicant()">הוספת מועמד משני</label>
+    </div>
+  </div>
+
+  <!-- ===== APPLICANT 2 ===== -->
+  <div class="applicant2-section" id="applicant2Section">
+    <div class="section">
+      <div class="section-title"><span class="icon">👤</span> מועמד משני</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>שם פרטי</label>
+          <input type="text" id="a2_first">
+        </div>
+        <div class="field-group">
+          <label>שם משפחה</label>
+          <input type="text" id="a2_last">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>גובה (מ')</label>
+          <input type="text" id="a2_height">
+        </div>
+        <div class="field-group">
+          <label>משקל (ק"ג)</label>
+          <input type="text" id="a2_weight">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>האם חל שינוי במשקל בשנתיים האחרונות?</label>
+        <div class="q-options" style="margin:8px 0">
+          <label class="radio-btn"><input type="radio" name="a2_weight_change" value="כן"> כן</label>
+          <label class="radio-btn"><input type="radio" name="a2_weight_change" value="לא"> לא</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SURGERY QUESTION ===== -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🏥</span> ברכישת כיסוי ניתוחים בישראל</div>
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">1</div>
+        <div class="q-text">האם הנך עוסק בספורט מקצועי אשר שכר בצידו? פרטי:</div>
+      </div>
+      <div class="q-detail">
+        <textarea id="q1_detail" placeholder="פרט/י כאן..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GENERAL QUESTIONS ===== -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📋</span> שאלות כלליות</div>
+
+    <!-- Q2 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">2</div>
+        <div class="q-text">האם הנך מעשן או עישנת במהלך השנתיים האחרונות?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q2" value="כן" onchange="showEl('q2_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q2" value="לא" onchange="hideEl('q2_detail')"> לא</label>
+      </div>
+      <div id="q2_detail" class="hidden">
+        <div class="smoking-detail">
+          <span>במידה וכן, כמה?</span>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> סיגריות</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> סיגרים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> נרגילה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox"> סיגריה אלקטרונית</label>
+        </div>
+        <div class="field-group" style="margin-top:8px;margin-right:38px">
+          <label>מספר סיגריות ביום/שבועיות בערך</label>
+          <input type="text" id="q2_amount" placeholder="כמות">
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">3</div>
+        <div class="q-text">האם הינך שותה כעת או שתית בעבר יותר מ-2 מנות ביום של משקה אלכוהולי?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q3" value="כן" onchange="showEl('q3_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q3" value="לא" onchange="hideEl('q3_detail')"> לא</label>
+      </div>
+      <div id="q3_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י (אין להתייחס ליותר מ-6 שעות בכל פעם)"></textarea>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">4</div>
+        <div class="q-text">האם הינך צורך כעת או צרכת בעבר סמים כלשהם (אין להתייחס ליותר מ-6 שעות כל פעם)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q4" value="כן" onchange="showEl('q4_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q4" value="לא" onchange="hideEl('q4_detail')"> לא</label>
+      </div>
+      <div id="q4_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">5</div>
+        <div class="q-text">במהלך בירור רפואי או מחלה שטרם הסתיים: האם תופנית במהלך השנתיים האחרונות ו/או נמצא כיום במהלך הבדיקות כגון: קולונוסקופיה, גסטרוסקופיה, דם סמוי, קולפוסקופיה, ביופסיה/משטח, אקו לב, MRI, CT, PET?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q5" value="כן" onchange="showEl('q5_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q5" value="לא" onchange="hideEl('q5_detail')"> לא</label>
+      </div>
+      <div id="q5_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HEALTH CONDITIONS (Q6) ===== -->
+  <div class="section">
+    <div class="section-title"><span class="icon">⚕️</span> האם אובחנת כיום או בעבר, מחלה, תופעה, פגיעה הקשורה באחד או יותר מהפרטים הבאים</div>
+
+    <!-- Q6 - עיניים/עצמות -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">6</div>
+        <div class="q-text">חוש עיניים: מערכת העצבים, עיוור, מרוּתק (רתוק), עיוורון חלקי, חוסר הכרה/עילפון, אפילפסיה, פרקינסון, טרשת נפוצה, שיתוק מוחין, אוטיזם?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q6" value="כן" onchange="showEl('q6_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q6" value="לא" onchange="hideEl('q6_detail')"> לא</label>
+      </div>
+      <div id="q6_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="מערכת העצבים"> מערכת העצבים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="עיוורון"> עיוורון</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="חוסר הכרה"> חוסר הכרה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="אפילפסיה"> אפילפסיה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="פרקינסון"> פרקינסון</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="טרשת נפוצה"> טרשת נפוצה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="שיתוק מוחין"> שיתוק מוחין</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q6_items" value="אוטיזם"> אוטיזם</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q7 - לב -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">7</div>
+        <div class="q-text">מחלת לב כלשהי: כאב בחזה (4), מחלת דם (4), מחלה ריאתית (4), אנמיה (4), מפרצת AVM, כפיות קרישה (5), PVD, DVT (5), סוכרת/אינסולין/סיפקו הוריד הרגליים, חספנה בנורי/טוקוריס (קודקוס), ITP/טרומבוציטופניה, מוסלימת מינור פלסטית מינור?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q7" value="כן" onchange="showEl('q7_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q7" value="לא" onchange="hideEl('q7_detail')"> לא</label>
+      </div>
+      <div id="q7_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="מחלת לב"> מחלת לב</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="כאב בחזה"> כאב בחזה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="מחלת דם"> מחלת דם</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="אנמיה"> אנמיה</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="מפרצת AVM"> מפרצת AVM</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="סוכרת"> סוכרת</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="PVD/DVT"> PVD/DVT</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q7_items" value="ITP"> ITP</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">8</div>
+        <div class="q-text">מערכת העפרנית/מחלת נפשות לרבות דיכאון ו/חרדה (7)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q8" value="כן" onchange="showEl('q8_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q8" value="לא" onchange="hideEl('q8_detail')"> לא</label>
+      </div>
+      <div id="q8_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">9</div>
+        <div class="q-text">הממצאה ליפופ רחיצת או דיאסטה בעבר 10 השנים האחרונות בשל הבעיות הבאות: עיוור דם (6), מחלת כלי דם לרבות מחלת הלב (8), סרטנוידים (9), נוירגילוידים (9)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q9" value="כן" onchange="showEl('q9_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q9" value="לא" onchange="hideEl('q9_detail')"> לא</label>
+      </div>
+      <div id="q9_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">10</div>
+        <div class="q-text">אורתופדיה וגלמות: מחלת חוליות/דם (נדירות) (10), מחלות יותר חריף (שרירי-רצועתי) (10)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q10" value="כן" onchange="showEl('q10_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q10" value="לא" onchange="hideEl('q10_detail')"> לא</label>
+      </div>
+      <div id="q10_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">11</div>
+        <div class="q-text">סימון תחומים שמיים: מחלת המעיים (סוקול)/ליקוי מאזניים, ניתוח שפירים (11), ניתוח סרטן סטוריום?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q11" value="כן" onchange="showEl('q11_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q11" value="לא" onchange="hideEl('q11_detail')"> לא</label>
+      </div>
+      <div id="q11_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">12</div>
+        <div class="q-text">מע' עיכול: קיבה (12), נשים (12), שחלות (12), אבנים בכיס מרה (12), לבלב (12), מחלת כבד (13), פסוריאזיס/קולגן/קרטיניזציס (12), צניחת בטנים?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q12" value="כן" onchange="showEl('q12_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q12" value="לא" onchange="hideEl('q12_detail')"> לא</label>
+      </div>
+      <div id="q12_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">13</div>
+        <div class="q-text">מע' השתן/אורולוגיה: כליות, שלפוחית השתן, ערמונית/פרוסטטה (לקטגנותל), חזרה על שאלות הממשל (כן = פשוט על שאלות הממשל הקודם)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q13" value="כן" onchange="showEl('q13_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q13" value="לא" onchange="hideEl('q13_detail')"> לא</label>
+      </div>
+      <div id="q13_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">14</div>
+        <div class="q-text">דום שינה/אפנאות/ברקפס (14), מחלת ראות שמיעתית (COPD/אמפיזמה)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q14" value="כן" onchange="showEl('q14_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q14" value="לא" onchange="hideEl('q14_detail')"> לא</label>
+      </div>
+      <div id="q14_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">15</div>
+        <div class="q-text">מחלות זיהומיות/דלקתיות מו' חיסון: איידס/נשא HIV, שחפת, סרקואידוזיס, סקלרודרמה?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q15" value="כן" onchange="showEl('q15_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q15" value="לא" onchange="hideEl('q15_detail')"> לא</label>
+      </div>
+      <div id="q15_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">16</div>
+        <div class="q-text">כליות ודרכי השתן (15): מערכת/דרכי שימוש (15), שלפוחית שתן (15)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q16" value="כן" onchange="showEl('q16_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q16" value="לא" onchange="hideEl('q16_detail')"> לא</label>
+      </div>
+      <div id="q16_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">17</div>
+        <div class="q-text">גידול/בלוטה: סרטן, גוש, ספירה שאלו, סרטנת אחר?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q17" value="כן" onchange="showEl('q17_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q17" value="לא" onchange="hideEl('q17_detail')"> לא</label>
+      </div>
+      <div id="q17_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">18</div>
+        <div class="q-text">האם המצב הקיים: מחלות/התוויות/אסתמאטיים: FMF (16), מחלת קרוהן/קוליטיס/צליאק, מחלת מפרקים/דלקת פרקים, אוסטיאופורוזיה?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q18" value="כן" onchange="showEl('q18_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q18" value="לא" onchange="hideEl('q18_detail')"> לא</label>
+      </div>
+      <div id="q18_detail" class="hidden">
+        <div class="q-sub-options">
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="FMF"> FMF</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="קרוהן"> קרוהן</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="קוליטיס"> קוליטיס</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="צליאק"> צליאק</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="דלקת פרקים"> דלקת פרקים</label>
+          <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q18_items" value="אוסטיאופורוזיס"> אוסטיאופורוזיס</label>
+        </div>
+        <div class="q-detail" style="margin-top:8px">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q19-28: Yes/No + detail questions -->
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">19</div>
+        <div class="q-text">מחלת עור/שחלה: בלוטים (18), בלוטות הלימפה (18), מחלת כליות (18), CTS (18), כיס שמאל?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q19" value="כן" onchange="showEl('q19_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q19" value="לא" onchange="hideEl('q19_detail')"> לא</label>
+      </div>
+      <div id="q19_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">20</div>
+        <div class="q-text">עיניים: קוצר ראיה (מעל 8 מעלות), מחלות/בעיות בעיניים (21), אוכוניטיס, עיוורון (21)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q20" value="כן" onchange="showEl('q20_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q20" value="לא" onchange="hideEl('q20_detail')"> לא</label>
+      </div>
+      <div id="q20_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">21</div>
+        <div class="q-text">שמיעה/אוזניים: לקויות שמיעה/חירשות (22), מחלת חירשות (22), מחלת רינון וגו (22)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q21" value="כן" onchange="showEl('q21_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q21" value="לא" onchange="hideEl('q21_detail')"> לא</label>
+      </div>
+      <div id="q21_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">22</div>
+        <div class="q-text">בלוטת התריס (המקו) (22), מחלת חריגת (20), מחלות חלבון (20), כל מחלות הון שקפה (מפורטת שהן עולם) (20), כלנגוי/בלט שר (20)?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q22" value="כן" onchange="showEl('q22_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q22" value="לא" onchange="hideEl('q22_detail')"> לא</label>
+      </div>
+      <div id="q22_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">23</div>
+        <div class="q-text">שאלון בריאות (18): נערית פריון (23), אספנים (23), גידורי עבודה (23), היריון/הפלות (24), פיברואידי רחם/בדיקות פאפ לא תקינות (24), שדיים?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q23" value="כן" onchange="showEl('q23_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q23" value="לא" onchange="hideEl('q23_detail')"> לא</label>
+      </div>
+      <div id="q23_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">24</div>
+        <div class="q-text">גינקולוגיה/אורולוגיה (24): הדבקויות, דליות/אגן חזקיות, הפליות חוזרות (מעל 3), גידולים בשחלות (24), מומי לידה/הפלות חזרה עם שימוש בשמגלים, פוריות/טיפולי פוריות, ניתוח לידתי?</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q24" value="כן" onchange="showEl('q24_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q24" value="לא" onchange="hideEl('q24_detail')"> לא</label>
+      </div>
+      <div id="q24_detail" class="hidden">
+        <div class="q-detail">
+          <textarea placeholder="פרט/י..."></textarea>
+        </div>
+        <div style="margin:8px 0 0 38px">
+          <label>לשון קיסרי: קיצות פי:</label>
+          <input type="text" placeholder="פרטי הידרוצלה (23)">
+        </div>
+        <div style="margin:8px 0 0 38px">
+          <label>אשר מייד: האם הבעיה נפתרה?</label>
+          <div class="q-options">
+            <label class="radio-btn"><input type="radio" name="q24_resolved" value="כן"> כן</label>
+            <label class="radio-btn"><input type="radio" name="q24_resolved" value="לא"> לא</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAST MEDICAL HISTORY ===== -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📂</span> שאלות הבאות מתייחסות רק למצבים רפואיים שעליהם לא נשאלת/הוצהרת בשאלות קודמות</div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">25</div>
+        <div class="q-text">האם אכרעה ריפויה או ייעוץ לך לעבור ניתוח במהלך 5 השנים האחרונות (25)? אין תשובה על שאלה זו אם הניתוח בוצע בעיה רפואית עליה תשובה בשאלות קודמות.</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q25" value="כן" onchange="showEl('q25_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q25" value="לא" onchange="hideEl('q25_detail')"> לא</label>
+      </div>
+      <div id="q25_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">26</div>
+        <div class="q-text">האם אושפזת תועל מ-3 ימים ב-5 השנים האחרונות (25)? אין תשובה על שאלה זו אם האשפוז בוצע בעיה רפואית עליה תשובה בשאלות קודמות.</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q26" value="כן" onchange="showEl('q26_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q26" value="לא" onchange="hideEl('q26_detail')"> לא</label>
+      </div>
+      <div id="q26_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י..."></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">27</div>
+        <div class="q-text">האם טופלת ו/או מטופל כעת בתרופות קבועות או תומכות לך על טיפול/ניתוק קבוע במשך 5 השנים האחרונות? אין תשובה על שאלה זו אם הטיפול הרופאים נעלה על עליה תשובה בשאלות קודמות.</div>
+      </div>
+      <div class="q-options">
+        <label class="radio-btn"><input type="radio" name="q27" value="כן" onchange="showEl('q27_detail')"> כן</label>
+        <label class="radio-btn"><input type="radio" name="q27" value="לא" onchange="hideEl('q27_detail')"> לא</label>
+      </div>
+      <div id="q27_detail" class="q-detail hidden">
+        <textarea placeholder="פרט/י את שם התרופה, מינון, ומשך הטיפול"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FAMILY HISTORY (Q28) ===== -->
+  <div class="section">
+    <div class="section-title"><span class="icon">👨‍👩‍👧‍👦</span> שאלה נוספת לנחשבים כיסוי קצר אור טופ/קצר לחיים</div>
+
+    <div class="question">
+      <div class="q-header">
+        <div class="q-number">28</div>
+        <div class="q-text">היסטוריה משפחתית: למיטב ידיעתך האם בקרב אחד מקרוביך (אב/אם/אחיות) אובחנו אחת או יותר מהמחלות הבאות?</div>
+      </div>
+      <div class="q-sub-options" style="margin-top:8px">
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="מחלת לב"> מחלת לב</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן מעי הגס"> סרטן מעי הגס</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן שלפוחית"> סרטן שלפוחית</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סרטן העשק"> סרטן העשק</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="סוכרת"> סוכרת</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="כליות פוליציסטיות"> כליות פוליציסטיות</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="פרקינסון"> פרקינסון</label>
+        <label class="checkbox-tag" onclick="toggleTag(this)"><input type="checkbox" name="q28_items" value="אלצהיימר"> אלצהיימר</label>
+      </div>
+      <div class="q-detail" style="margin-top:8px">
+        <textarea placeholder="פרט/י מי מבני המשפחה ואיזו מחלה"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SIGNATURES ===== -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✍️</span> חתימות</div>
+
+    <div class="field-group">
+      <label>תאריך</label>
+      <input type="date" id="sign_date">
+    </div>
+
+    <div class="field-group" style="margin-top:16px">
+      <label>חתימת מועמד ראשי *</label>
+      <div class="sig-container">
+        <canvas id="sig1Canvas"></canvas>
+        <div class="sig-actions">
+          <button class="btn-clear-sig" onclick="sig1Pad.clear()">🗑️ נקה חתימה</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group applicant2-sig hidden" style="margin-top:16px" id="sig2Container">
+      <label>חתימת מועמד משני</label>
+      <div class="sig-container">
+        <canvas id="sig2Canvas"></canvas>
+        <div class="sig-actions">
+          <button class="btn-clear-sig" onclick="sig2Pad.clear()">🗑️ נקה חתימה</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SUBMIT ===== -->
+  <div class="submit-section">
+    <button class="btn-submit" onclick="submitForm()" id="submitBtn">
+      📤 שלח הצהרת בריאות
+    </button>
+    <p class="note-text" style="margin-top:12px">בלחיצה על שלח, הטופס יישלח למייל הסוכן</p>
+  </div>
+
+</div>
+
+<!-- Success Screen -->
+<div class="container">
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:8px">הטופס נשלח בהצלחה!</h2>
+    <p style="color:var(--text-light)">תודה, הצהרת הבריאות התקבלה. הסוכן יצור עמך קשר בהקדם.</p>
+    <button class="btn-submit" onclick="downloadPDF()" style="margin-top:20px;background:var(--success);max-width:280px;">
+      ⬇️ הורד PDF לטלפון / מחשב
+    </button>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p id="loadingText">מכין את הטופס...</p>
+  </div>
+</div>
+
+<script>
+  let generatedPdf = null;
+
+  // ===== SIGNATURE PADS =====
+  const sig1Canvas = document.getElementById('sig1Canvas');
+  const sig2Canvas = document.getElementById('sig2Canvas');
+
+  function resizeCanvas(canvas) {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    canvas.getContext('2d').scale(ratio, ratio);
+  }
+
+  resizeCanvas(sig1Canvas);
+  resizeCanvas(sig2Canvas);
+
+  const sig1Pad = new SignaturePad(sig1Canvas, {
+    backgroundColor: 'rgb(255,255,255)',
+    penColor: 'rgb(30,41,59)'
+  });
+
+  const sig2Pad = new SignaturePad(sig2Canvas, {
+    backgroundColor: 'rgb(255,255,255)',
+    penColor: 'rgb(30,41,59)'
+  });
+
+  window.addEventListener('resize', () => {
+    const sig1Data = sig1Pad.toData();
+    const sig2Data = sig2Pad.toData();
+    resizeCanvas(sig1Canvas);
+    resizeCanvas(sig2Canvas);
+    sig1Pad.fromData(sig1Data);
+    sig2Pad.fromData(sig2Data);
+  });
+
+  // ===== SECOND APPLICANT TOGGLE =====
+  let showApplicant2 = false;
+
+  function toggleSecondApplicant() {
+    showApplicant2 = !showApplicant2;
+    const toggle = document.getElementById('toggleApplicant2');
+    const section = document.getElementById('applicant2Section');
+    const sig2 = document.getElementById('sig2Container');
+
+    toggle.classList.toggle('active', showApplicant2);
+    section.classList.toggle('open', showApplicant2);
+    sig2.classList.toggle('hidden', !showApplicant2);
+  }
+
+  // ===== CHECKBOX TAGS =====
+  function toggleTag(el) {
+    const cb = el.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    el.classList.toggle('checked', cb.checked);
+  }
+
+  // ===== SHOW/HIDE DETAIL =====
+  function showEl(id) {
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function hideEl(id) {
+    document.getElementById(id).classList.add('hidden');
+  }
+
+  // ===== PROGRESS BAR =====
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById('progressBar').style.width = progress + '%';
+  }
+
+  window.addEventListener('scroll', updateProgress);
+
+  // ===== COLLECT FORM DATA =====
+  function collectFormData() {
+    const data = {};
+
+    // Applicant 1
+    data['מועמד_ראשי_שם_פרטי'] = document.getElementById('a1_first').value;
+    data['מועמד_ראשי_שם_משפחה'] = document.getElementById('a1_last').value;
+    data['מועמד_ראשי_גובה'] = document.getElementById('a1_height').value;
+    data['מועמד_ראשי_משקל'] = document.getElementById('a1_weight').value;
+
+    const a1wc = document.querySelector('input[name="a1_weight_change"]:checked');
+    data['מועמד_ראשי_שינוי_משקל'] = a1wc ? a1wc.value : '';
+
+    // Applicant 2
+    if (showApplicant2) {
+      data['מועמד_משני_שם_פרטי'] = document.getElementById('a2_first').value;
+      data['מועמד_משני_שם_משפחה'] = document.getElementById('a2_last').value;
+      data['מועמד_משני_גובה'] = document.getElementById('a2_height').value;
+      data['מועמד_משני_משקל'] = document.getElementById('a2_weight').value;
+    }
+
+    // Q1
+    data['שאלה_1_ספורט'] = document.getElementById('q1_detail').value;
+
+    // Q2-Q27 yes/no + details
+    for (let i = 2; i <= 27; i++) {
+      const radio = document.querySelector(`input[name="q${i}"]:checked`);
+      data[`שאלה_${i}`] = radio ? radio.value : '';
+
+      const detailEl = document.getElementById(`q${i}_detail`);
+      if (detailEl) {
+        const textarea = detailEl.querySelector('textarea');
+        if (textarea) data[`שאלה_${i}_פירוט`] = textarea.value;
+
+        // Checkboxes
+        const checks = detailEl.querySelectorAll('input[type="checkbox"]:checked');
+        if (checks.length > 0) {
+          data[`שאלה_${i}_סימונים`] = Array.from(checks).map(c => c.value || c.parentElement.textContent.trim()).join(', ');
+        }
+      }
+    }
+
+    // Q28
+    const q28checks = document.querySelectorAll('input[name="q28_items"]:checked');
+    data['שאלה_28_היסטוריה_משפחתית'] = Array.from(q28checks).map(c => c.value).join(', ');
+
+    // Date
+    data['תאריך'] = document.getElementById('sign_date').value;
+
+    // Signatures
+    data['חתימה_מועמד_ראשי'] = sig1Pad.isEmpty() ? '' : sig1Pad.toDataURL();
+    if (showApplicant2) {
+      data['חתימה_מועמד_משני'] = sig2Pad.isEmpty() ? '' : sig2Pad.toDataURL();
+    }
+
+    return data;
+  }
+
+  // ===== FORMAT EMAIL BODY =====
+  function formatEmailBody(data) {
+    let body = '=== הצהרת בריאות מבוגרים ===\n\n';
+
+    body += `📅 תאריך: ${data['תאריך'] || 'לא צוין'}\n\n`;
+
+    body += '--- מועמד ראשי ---\n';
+    body += `שם: ${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}\n`;
+    body += `גובה: ${data['מועמד_ראשי_גובה']} | משקל: ${data['מועמד_ראשי_משקל']}\n`;
+    body += `שינוי משקל: ${data['מועמד_ראשי_שינוי_משקל']}\n\n`;
+
+    if (showApplicant2) {
+      body += '--- מועמד משני ---\n';
+      body += `שם: ${data['מועמד_משני_שם_פרטי']} ${data['מועמד_משני_שם_משפחה']}\n`;
+      body += `גובה: ${data['מועמד_משני_גובה']} | משקל: ${data['מועמד_משני_משקל']}\n\n`;
+    }
+
+    body += '--- תשובות ---\n\n';
+
+    if (data['שאלה_1_ספורט']) body += `שאלה 1 (ספורט): ${data['שאלה_1_ספורט']}\n`;
+
+    for (let i = 2; i <= 27; i++) {
+      const answer = data[`שאלה_${i}`];
+      if (answer) {
+        body += `שאלה ${i}: ${answer}`;
+        const detail = data[`שאלה_${i}_פירוט`];
+        const marks = data[`שאלה_${i}_סימונים`];
+        if (marks) body += ` | סימונים: ${marks}`;
+        if (detail) body += ` | פירוט: ${detail}`;
+        body += '\n';
+      }
+    }
+
+    if (data['שאלה_28_היסטוריה_משפחתית']) {
+      body += `\nשאלה 28 (היסטוריה משפחתית): ${data['שאלה_28_היסטוריה_משפחתית']}\n`;
+    }
+
+    return body;
+  }
+
+  // ===== BUILD PDF CONTENT =====
+  function buildPrintContent(data) {
+    const div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:white;color:#111;font-family:Arial,Helvetica,sans-serif;direction:rtl;text-align:right;padding:50px 40px;line-height:1.8;font-size:13px;';
+
+    let html = `
+      <div style="text-align:center;margin-bottom:30px;border-bottom:2px solid #1a56db;padding-bottom:20px;">
+        <h1 style="font-size:22px;color:#1a56db;margin-bottom:5px;">הצהרת בריאות מבוגרים</h1>
+        <p style="color:#666;font-size:13px;">תאריך: ${data['תאריך'] || ''}</p>
+      </div>
+
+      <h2 style="font-size:15px;color:#1a56db;border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin-bottom:12px;">פרטי מועמד ראשי</h2>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+        <tr><td style="padding:4px 8px;width:30%;color:#555;">שם:</td><td style="padding:4px 8px;font-weight:bold;">${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}</td></tr>
+        <tr style="background:#f8fafc;"><td style="padding:4px 8px;color:#555;">גובה:</td><td style="padding:4px 8px;">${data['מועמד_ראשי_גובה']} ס"מ</td></tr>
+        <tr><td style="padding:4px 8px;color:#555;">משקל:</td><td style="padding:4px 8px;">${data['מועמד_ראשי_משקל']} ק"ג</td></tr>
+        <tr style="background:#f8fafc;"><td style="padding:4px 8px;color:#555;">שינוי משקל:</td><td style="padding:4px 8px;">${data['מועמד_ראשי_שינוי_משקל'] || 'לא'}</td></tr>
+      </table>`;
+
+    if (data['מועמד_משני_שם_פרטי']) {
+      html += `
+        <h2 style="font-size:15px;color:#1a56db;border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin-bottom:12px;">פרטי מועמד משני</h2>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+          <tr><td style="padding:4px 8px;width:30%;color:#555;">שם:</td><td style="padding:4px 8px;font-weight:bold;">${data['מועמד_משני_שם_פרטי']} ${data['מועמד_משני_שם_משפחה']}</td></tr>
+          <tr style="background:#f8fafc;"><td style="padding:4px 8px;color:#555;">גובה:</td><td style="padding:4px 8px;">${data['מועמד_משני_גובה']} ס"מ</td></tr>
+          <tr><td style="padding:4px 8px;color:#555;">משקל:</td><td style="padding:4px 8px;">${data['מועמד_משני_משקל']} ק"ג</td></tr>
+        </table>`;
+    }
+
+    html += `<h2 style="font-size:15px;color:#1a56db;border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin-bottom:12px;">תשובות לשאלות</h2>`;
+
+    if (data['שאלה_1_ספורט']) {
+      html += `<div style="margin-bottom:6px;padding:7px 10px;background:#f8fafc;border-radius:4px;border-right:3px solid #94a3b8;"><strong>שאלה 1 (ספורט):</strong> ${data['שאלה_1_ספורט']}</div>`;
+    }
+
+    for (let i = 2; i <= 27; i++) {
+      const ans = data[`שאלה_${i}`];
+      if (ans) {
+        const isYes = ans === 'כן';
+        const bg = isYes ? '#fff7ed' : '#f8fafc';
+        const border = isYes ? '#f97316' : '#86efac';
+        const ansColor = isYes ? '#c2410c' : '#166534';
+        let row = `<div style="margin-bottom:6px;padding:7px 10px;background:${bg};border-radius:4px;border-right:3px solid ${border};">`;
+        row += `<strong>שאלה ${i}:</strong> <span style="color:${ansColor};font-weight:bold;">${ans}</span>`;
+        const marks = data[`שאלה_${i}_סימונים`];
+        const detail = data[`שאלה_${i}_פירוט`];
+        if (marks) row += ` &nbsp;|&nbsp; <em>${marks}</em>`;
+        if (detail) row += `<br><span style="color:#444;font-size:12px;">פירוט: ${detail}</span>`;
+        row += `</div>`;
+        html += row;
+      }
+    }
+
+    if (data['שאלה_28_היסטוריה_משפחתית']) {
+      html += `<div style="margin-bottom:6px;padding:7px 10px;background:#f8fafc;border-radius:4px;border-right:3px solid #94a3b8;"><strong>שאלה 28 (היסטוריה משפחתית):</strong> ${data['שאלה_28_היסטוריה_משפחתית']}</div>`;
+    }
+
+    html += `<div style="margin-top:30px;border-top:1px solid #e2e8f0;padding-top:20px;">
+      <h2 style="font-size:15px;color:#1a56db;margin-bottom:12px;">חתימות</h2>`;
+
+    if (data['חתימה_מועמד_ראשי']) {
+      html += `<div style="margin-bottom:16px;"><p style="color:#555;margin-bottom:6px;">חתימת מועמד ראשי:</p><img src="${data['חתימה_מועמד_ראשי']}" style="max-width:200px;height:80px;border:1px solid #e2e8f0;border-radius:4px;object-fit:contain;background:white;"></div>`;
+    }
+    if (data['חתימה_מועמד_משני']) {
+      html += `<div style="margin-bottom:16px;"><p style="color:#555;margin-bottom:6px;">חתימת מועמד משני:</p><img src="${data['חתימה_מועמד_משני']}" style="max-width:200px;height:80px;border:1px solid #e2e8f0;border-radius:4px;object-fit:contain;background:white;"></div>`;
+    }
+
+    html += `</div>`;
+    div.innerHTML = html;
+    return div;
+  }
+
+  // ===== GENERATE PDF =====
+  async function generatePDF(data) {
+    const div = buildPrintContent(data);
+    document.body.appendChild(div);
+
+    const canvas = await html2canvas(div, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+
+    document.body.removeChild(div);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height / canvas.width) * imgWidth;
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+    let heightLeft = imgHeight;
+    let position = 0;
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+    return pdf;
+  }
+
+  // ===== DOWNLOAD PDF =====
+  function downloadPDF() {
+    if (!generatedPdf) return;
+    const firstName = document.getElementById('a1_first').value.trim();
+    const lastName = document.getElementById('a1_last').value.trim();
+    generatedPdf.save(`הצהרת_בריאות_${firstName}_${lastName}.pdf`);
+  }
+
+  // ===== SUBMIT =====
+  async function submitForm() {
+    const firstName = document.getElementById('a1_first').value.trim();
+    const lastName = document.getElementById('a1_last').value.trim();
+
+    if (!firstName || !lastName) {
+      alert('נא למלא שם פרטי ושם משפחה של מועמד ראשי');
+      return;
+    }
+    if (sig1Pad.isEmpty()) {
+      alert('נא לחתום (מועמד ראשי)');
+      return;
+    }
+
+    const data = collectFormData();
+
+    document.getElementById('loadingOverlay').classList.add('show');
+    document.getElementById('loadingText').textContent = 'מכין את הטופס...';
+    document.getElementById('submitBtn').disabled = true;
+
+    try {
+      generatedPdf = await generatePDF(data);
+      const pdfBase64 = generatedPdf.output('datauristring').split(',')[1];
+
+      document.getElementById('loadingText').textContent = 'שולח...';
+
+      const response = await fetch('/api/send-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pdfBase64,
+          applicantName: `${firstName} ${lastName}`,
+          date: data['תאריך'] || new Date().toLocaleDateString('he-IL')
+        })
+      });
+
+      if (!response.ok) throw new Error('Server error');
+
+      document.getElementById('loadingOverlay').classList.remove('show');
+      document.getElementById('formContainer').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+
+    } catch (err) {
+      document.getElementById('loadingOverlay').classList.remove('show');
+      document.getElementById('submitBtn').disabled = false;
+      alert('שגיאה בשליחת הטופס. נסה שוב.');
+      console.error(err);
+    }
+  }
+
+  // Set today's date as default
+  document.getElementById('sign_date').valueAsDate = new Date();
+</script>
+
+</body>
+</html>
