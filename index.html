@@ -228,8 +228,8 @@
         <div class="field-group"><label class="fl">שם משפחה *</label><input type="text" id="a1_last"></div>
       </div>
       <div class="field-row">
-        <div class="field-group"><label class="fl">גובה (מ')</label><input type="text" id="a1_height" placeholder="1.75"></div>
-        <div class="field-group"><label class="fl">משקל (ק"ג)</label><input type="text" id="a1_weight" placeholder="70"></div>
+        <div class="field-group"><label class="fl">גובה (מ') *</label><input type="number" id="a1_height" placeholder="1.75" min="1.0" max="2.5" step="0.01"></div>
+        <div class="field-group"><label class="fl">משקל (ק"ג) *</label><input type="number" id="a1_weight" placeholder="70" min="20" max="300"></div>
       </div>
       <div class="field-group">
         <label class="fl">שינוי משקל בשנתיים האחרונות?</label>
@@ -274,8 +274,8 @@
           <div class="field-group"><label class="fl">שם משפחה</label><input type="text" id="a2_last"></div>
         </div>
         <div class="field-row">
-          <div class="field-group"><label class="fl">גובה (מ')</label><input type="text" id="a2_height"></div>
-          <div class="field-group"><label class="fl">משקל (ק"ג)</label><input type="text" id="a2_weight"></div>
+          <div class="field-group"><label class="fl">גובה (מ')</label><input type="number" id="a2_height" placeholder="1.75" min="1.0" max="2.5" step="0.01"></div>
+          <div class="field-group"><label class="fl">משקל (ק"ג)</label><input type="number" id="a2_weight" placeholder="70" min="20" max="300"></div>
         </div>
         <div class="field-group">
           <label class="fl">שינוי משקל?</label>
@@ -301,8 +301,12 @@
         <div class="q-row">
           <div class="q-num">1</div>
           <div class="q-content">
-            <div class="q-text">האם הנך עוסק בספורט מקצועי אשר שכר בצידו? פרטי:</div>
-            <div class="detail"><textarea id="q1_detail" placeholder="פרט/י כאן..."></textarea></div>
+            <div class="q-text">האם הנך עוסק בספורט מקצועי אשר שכר בצידו?</div>
+            <div class="yn-group">
+              <label class="yn-btn"><input type="radio" name="q1" value="כן" onchange="showEl('q1d')"><div class="yn-label"><span class="yn-dot"></span>כן</div></label>
+              <label class="yn-btn"><input type="radio" name="q1" value="לא" onchange="hideEl('q1d')"><div class="yn-label"><span class="yn-dot"></span>לא</div></label>
+            </div>
+            <div id="q1d" class="detail hidden"><textarea id="q1_detail" placeholder="פרט/י: שם הספורט, שכר חודשי, מסגרת..."></textarea></div>
           </div>
         </div>
       </div>
@@ -853,7 +857,11 @@
       data['מועמד_משני_משקל']     = document.getElementById('a2_weight').value;
     }
 
-    data['שאלה_1_ספורט'] = document.getElementById('q1_detail').value;
+    const q1radio = document.querySelector('input[name="q1"]:checked');
+    data['שאלה_1_ספורט'] = q1radio ? q1radio.value : '';
+    if (q1radio && q1radio.value === 'כן') {
+      data['שאלה_1_פירוט'] = document.getElementById('q1_detail').value;
+    }
 
     for (let i = 2; i <= 27; i++) {
       const radio = document.querySelector(`input[name="q${i}"]:checked`);
@@ -975,6 +983,11 @@
       html += sec('', 'מועמד משני', app2Body);
     }
 
+    // Q1 sport
+    if (data['שאלה_1_ספורט']) {
+      html += sec('', 'כיסוי ניתוחים — ספורט מקצועי', qRow(1, 'ספורט מקצועי בשכר', data['שאלה_1_ספורט'], '', data['שאלה_1_פירוט']||''));
+    }
+
     // General Q2-Q5
     let genBody = '';
     for (let i = 2; i <= 5; i++) {
@@ -1065,6 +1078,31 @@
     const fn = document.getElementById('a1_first').value.trim();
     const ln = document.getElementById('a1_last').value.trim();
     if (!fn || !ln) { alert('נא למלא שם פרטי ושם משפחה של מועמד ראשי'); return; }
+
+    // Validate height
+    const heightVal = parseFloat(document.getElementById('a1_height').value);
+    if (!document.getElementById('a1_height').value || isNaN(heightVal) || heightVal < 1.0 || heightVal > 2.5) {
+      alert('נא להזין גובה תקני (1.0 – 2.5 מטר)'); return;
+    }
+    // Validate weight
+    const weightVal = parseFloat(document.getElementById('a1_weight').value);
+    if (!document.getElementById('a1_weight').value || isNaN(weightVal) || weightVal < 20 || weightVal > 300) {
+      alert('נא להזין משקל תקני (20 – 300 ק"ג)'); return;
+    }
+
+    // Validate Q1
+    if (!document.querySelector('input[name="q1"]:checked')) {
+      alert('נא לענות על שאלה 1 (ספורט מקצועי)'); return;
+    }
+
+    // Validate Q2-Q27
+    for (let i = 2; i <= 27; i++) {
+      if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+        alert(`נא לענות על שאלה ${i}`); return;
+      }
+    }
+
+    // Validate signature
     if (sig1Pad.isEmpty()) { alert('נא לחתום (מועמד ראשי)'); return; }
 
     const data = collectFormData();
