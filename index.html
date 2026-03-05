@@ -215,6 +215,11 @@
   }
   .file-chip-remove { border:none; background:none; color:#94a3b8; cursor:pointer; font-size:15px; line-height:1; padding:0 0 0 4px; }
   .file-chip-remove:hover { color:var(--error); }
+
+  /* Improve tap responsiveness on Chrome mobile */
+  button, input, label { touch-action: manipulation; }
+  * { -webkit-tap-highlight-color: transparent; }
+  label { cursor: pointer; }
 </style>
 </head>
 <body>
