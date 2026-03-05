@@ -79,6 +79,17 @@
     document.body.appendChild(div);
     status.textContent = 'מריץ html2canvas...';
 
+    // Wait for all images to finish loading before html2canvas captures
+    await new Promise(resolve => {
+      const imgs = Array.from(div.querySelectorAll('img'));
+      if (!imgs.length) return resolve();
+      let done = 0;
+      imgs.forEach(img => {
+        if (img.complete) { if (++done === imgs.length) resolve(); }
+        else { img.onload = img.onerror = () => { if (++done === imgs.length) resolve(); }; }
+      });
+    });
+
     try {
       const fullCanvas = await html2canvas(div, {
         scale: 2, useCORS: true, allowTaint: true,
