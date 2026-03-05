@@ -1121,20 +1121,32 @@
       html += sec('מסמכים כלליים מצורפים', gfBody);
     }
 
-    // Signatures — canvas elements, drawn onto in generatePDF
+    // Convert data URL → Blob URL so html2canvas renders img tags reliably
+    const toBlob = (dataUrl) => {
+      if (!dataUrl) return '';
+      const [header, b64] = dataUrl.split(',');
+      const mime = header.match(/:(.*?);/)[1];
+      const bin = atob(b64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return URL.createObjectURL(new Blob([arr], { type: mime }));
+    };
+    const sig1Blob = toBlob(data['חתימה_מועמד_ראשי']);
+    const sig2Blob = toBlob(data['חתימה_מועמד_משני']);
+
     const n1 = `${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}`.trim();
     let sigBody = `<div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:12px;">
       <div>
         <div style="border:2px dashed #cbd5e1;border-radius:10px;padding:5px;background:white;display:inline-block;">
-          <canvas id="pdf_sig1" width="200" height="78" style="display:block;border-radius:7px;"></canvas>
+          ${sig1Blob ? `<img src="${sig1Blob}" width="200" height="78" style="display:block;border-radius:7px;">` : '<div style="width:200px;height:78px;background:#f8fafc;border-radius:7px;"></div>'}
         </div>
         <div style="font-size:11px;color:#94a3b8;text-align:center;margin-top:4px;">${n1}</div>
       </div>`;
-    if (data['חתימה_מועמד_משני']) {
+    if (sig2Blob) {
       const n2 = `${data['מועמד_משני_שם_פרטי']||''} ${data['מועמד_משני_שם_משפחה']||''}`.trim();
       sigBody += `<div>
         <div style="border:2px dashed #cbd5e1;border-radius:10px;padding:5px;background:white;display:inline-block;">
-          <canvas id="pdf_sig2" width="200" height="78" style="display:block;border-radius:7px;"></canvas>
+          <img src="${sig2Blob}" width="200" height="78" style="display:block;border-radius:7px;">
         </div>
         <div style="font-size:11px;color:#94a3b8;text-align:center;margin-top:4px;">${n2}</div>
       </div>`;
@@ -1151,12 +1163,12 @@
       </div>`;
 
     div.innerHTML = html;
-    return { div, data };
+    return { div, data, blobURLs: [sig1Blob, sig2Blob].filter(Boolean) };
   }
 
   // ── GENERATE PDF ──
   async function generatePDF(data) {
-    const { div } = buildPrintContent(data);
+    const { div, blobURLs } = buildPrintContent(data);
     document.body.appendChild(div);
 
     const { jsPDF } = window.jspdf;
@@ -1164,46 +1176,46 @@
     const pw = pdf.internal.pageSize.getWidth();
     const ph = pdf.internal.pageSize.getHeight();
 
-    // Render full content; draw signatures onto cloned canvas via onclone (most reliable)
     const fullCanvas = await html2canvas(div, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#f1f5f9',
-      logging: false,
-      onclone: (clonedDoc) => {
-        const promises = [];
-        const drawSig = (id, url) => {
-          if (!url) return;
-          const c = clonedDoc.getElementById(id);
-          if (!c) return;
-          promises.push(new Promise(resolve => {
-            const img = new Image();
-            img.onload = () => { c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); resolve(); };
-            img.onerror = resolve;
-            img.src = url;
-          }));
-        };
-        drawSig('pdf_sig1', data['חתימה_מועמד_ראשי']);
-        drawSig('pdf_sig2', data['חתימה_מועמד_משני']);
-        return Promise.all(promises);
-      }
+      scale: 2, useCORS: true, allowTaint: true,
+      backgroundColor: '#f1f5f9', logging: false
     });
     document.body.removeChild(div);
+    blobURLs.forEach(u => URL.revokeObjectURL(u));
 
-    // Slice canvas into clean per-page chunks — no content overlap or seams
+    // Smart page cuts: look for a background-coloured row near each cut point
+    const ctx = fullCanvas.getContext('2d');
     const pageHeightPx = Math.floor(fullCanvas.width * (ph / pw));
-    const totalPages = Math.ceil(fullCanvas.height / pageHeightPx);
+    const bg = [241, 245, 249]; // #f1f5f9
 
-    for (let page = 0; page < totalPages; page++) {
-      if (page > 0) pdf.addPage();
-      const sliceH = Math.min(pageHeightPx, fullCanvas.height - page * pageHeightPx);
+    const findSafeCut = (idealY) => {
+      for (let dy = 0; dy <= 80; dy++) {
+        const y = idealY - dy;
+        if (y <= 0) return idealY;
+        const row = ctx.getImageData(0, y, fullCanvas.width, 1).data;
+        let isBg = true;
+        for (let x = 0; x < fullCanvas.width * 4; x += 4) {
+          if (Math.abs(row[x]-bg[0])>20 || Math.abs(row[x+1]-bg[1])>20 || Math.abs(row[x+2]-bg[2])>20) {
+            isBg = false; break;
+          }
+        }
+        if (isBg) return y;
+      }
+      return idealY;
+    };
+
+    let cutY = 0;
+    while (cutY < fullCanvas.height) {
+      if (cutY > 0) pdf.addPage();
+      const nextIdeal = cutY + pageHeightPx;
+      const nextCut = nextIdeal >= fullCanvas.height ? fullCanvas.height : findSafeCut(nextIdeal);
+      const sliceH = nextCut - cutY;
       const slice = document.createElement('canvas');
       slice.width = fullCanvas.width;
       slice.height = sliceH;
-      slice.getContext('2d').drawImage(fullCanvas, 0, -page * pageHeightPx);
-      const sliceH_mm = pw * sliceH / fullCanvas.width;
-      pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pw, sliceH_mm);
+      slice.getContext('2d').drawImage(fullCanvas, 0, -cutY);
+      pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pw, pw * sliceH / fullCanvas.width);
+      cutY = nextCut;
     }
 
     return pdf;
@@ -1272,6 +1284,13 @@
 
     // Validate signature
     if (sig1Pad.isEmpty()) { alert('נא לחתום (מועמד ראשי)'); return; }
+
+    // File size guard — Vercel limit ~4.5MB, base64 adds 33% overhead
+    const totalBytes = Object.values(attachedFiles).flat().reduce((sum, f) => sum + f.size, 0);
+    if (totalBytes > 3 * 1024 * 1024) {
+      alert(`גודל הקבצים המצורפים (${(totalBytes / 1024 / 1024).toFixed(1)} MB) עולה על המגבלה של 3MB.\nנא להסיר חלק מהקבצים ולנסות שוב.`);
+      return;
+    }
 
     const data = collectFormData();
     document.getElementById('loadingOverlay').classList.add('show');
