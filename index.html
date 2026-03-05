@@ -1159,37 +1159,53 @@
     const { div } = buildPrintContent(data);
     document.body.appendChild(div);
 
-    // Draw signature directly onto canvas elements (bypasses html2canvas img issues)
-    const drawSig = (id, url) => {
-      if (!url) return Promise.resolve();
-      const c = div.querySelector('#' + id);
-      if (!c) return Promise.resolve();
-      return new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => { c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); resolve(); };
-        img.onerror = resolve;
-        img.src = url;
-      });
-    };
-
-    await Promise.all([
-      drawSig('pdf_sig1', data['חתימה_מועמד_ראשי']),
-      drawSig('pdf_sig2', data['חתימה_מועמד_משני']),
-    ]);
-
-    const canvas = await html2canvas(div, { scale:2, useCORS:true, allowTaint:true, backgroundColor:'#f1f5f9', logging:false });
-    document.body.removeChild(div);
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
     const pw = pdf.internal.pageSize.getWidth();
     const ph = pdf.internal.pageSize.getHeight();
-    const iw = pw;
-    const ih = (canvas.height / canvas.width) * iw;
-    const imgData = canvas.toDataURL('image/jpeg', 0.93);
-    let left = ih, pos = 0;
-    pdf.addImage(imgData, 'JPEG', 0, pos, iw, ih);
-    left -= ph;
-    while (left > 0) { pos = left - ih; pdf.addPage(); pdf.addImage(imgData, 'JPEG', 0, pos, iw, ih); left -= ph; }
+
+    // Render full content; draw signatures onto cloned canvas via onclone (most reliable)
+    const fullCanvas = await html2canvas(div, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#f1f5f9',
+      logging: false,
+      onclone: (clonedDoc) => {
+        const promises = [];
+        const drawSig = (id, url) => {
+          if (!url) return;
+          const c = clonedDoc.getElementById(id);
+          if (!c) return;
+          promises.push(new Promise(resolve => {
+            const img = new Image();
+            img.onload = () => { c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); resolve(); };
+            img.onerror = resolve;
+            img.src = url;
+          }));
+        };
+        drawSig('pdf_sig1', data['חתימה_מועמד_ראשי']);
+        drawSig('pdf_sig2', data['חתימה_מועמד_משני']);
+        return Promise.all(promises);
+      }
+    });
+    document.body.removeChild(div);
+
+    // Slice canvas into clean per-page chunks — no content overlap or seams
+    const pageHeightPx = Math.floor(fullCanvas.width * (ph / pw));
+    const totalPages = Math.ceil(fullCanvas.height / pageHeightPx);
+
+    for (let page = 0; page < totalPages; page++) {
+      if (page > 0) pdf.addPage();
+      const sliceH = Math.min(pageHeightPx, fullCanvas.height - page * pageHeightPx);
+      const slice = document.createElement('canvas');
+      slice.width = fullCanvas.width;
+      slice.height = sliceH;
+      slice.getContext('2d').drawImage(fullCanvas, 0, -page * pageHeightPx);
+      const sliceH_mm = pw * sliceH / fullCanvas.width;
+      pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pw, sliceH_mm);
+    }
+
     return pdf;
   }
 
