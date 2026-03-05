@@ -971,14 +971,13 @@
     return data;
   }
 
-  // Helper: copy a live signature canvas into a new 200×78 canvas (no img loading, no CORS)
-  const copySig = (src) => {
+  function copySig(srcCanvas, w = 200, h = 78) {
     const c = document.createElement('canvas');
-    c.width = 200; c.height = 78;
-    c.style.cssText = 'display:block;border-radius:7px;';
-    if (src) c.getContext('2d').drawImage(src, 0, 0, 200, 78);
+    c.width = w;
+    c.height = h;
+    if (srcCanvas) c.getContext('2d').drawImage(srcCanvas, 0, 0, w, h);
     return c;
-  };
+  }
 
   // ── BUILD PDF — mirrors the form layout ──
   function buildPrintContent(data, sigCanvas1, sigCanvas2) {
