@@ -972,7 +972,7 @@
   }
 
   // ── BUILD PDF — mirrors the form layout ──
-  function buildPrintContent(data) {
+  function buildPrintContent(data, sigCanvas1, sigCanvas2) {
     // short labels per question
     const qLabels = {
       1:'האם הנך עוסק בספורט מקצועי אשר שכר בצידו?',
@@ -1121,32 +1121,28 @@
       html += sec('מסמכים כלליים מצורפים', gfBody);
     }
 
-    // Convert data URL → Blob URL so html2canvas renders img tags reliably
-    const toBlob = (dataUrl) => {
-      if (!dataUrl) return '';
-      const [header, b64] = dataUrl.split(',');
-      const mime = header.match(/:(.*?);/)[1];
-      const bin = atob(b64);
-      const arr = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-      return URL.createObjectURL(new Blob([arr], { type: mime }));
+    // Helper: copy a live signature canvas into a new 200×78 canvas (no img loading, no CORS)
+    const copySig = (src) => {
+      const c = document.createElement('canvas');
+      c.width = 200; c.height = 78;
+      c.style.cssText = 'display:block;border-radius:7px;';
+      if (src) c.getContext('2d').drawImage(src, 0, 0, 200, 78);
+      return c;
     };
-    const sig1Blob = toBlob(data['חתימה_מועמד_ראשי']);
-    const sig2Blob = toBlob(data['חתימה_מועמד_משני']);
 
     const n1 = `${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}`.trim();
     let sigBody = `<div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:12px;">
       <div>
         <div style="border:2px dashed #cbd5e1;border-radius:10px;padding:5px;background:white;display:inline-block;">
-          ${sig1Blob ? `<img src="${sig1Blob}" width="200" height="78" style="display:block;border-radius:7px;">` : '<div style="width:200px;height:78px;background:#f8fafc;border-radius:7px;"></div>'}
+          <div id="pdf_sig1_slot" style="width:200px;height:78px;"></div>
         </div>
         <div style="font-size:11px;color:#94a3b8;text-align:center;margin-top:4px;">${n1}</div>
       </div>`;
-    if (sig2Blob) {
+    if (sigCanvas2) {
       const n2 = `${data['מועמד_משני_שם_פרטי']||''} ${data['מועמד_משני_שם_משפחה']||''}`.trim();
       sigBody += `<div>
         <div style="border:2px dashed #cbd5e1;border-radius:10px;padding:5px;background:white;display:inline-block;">
-          <img src="${sig2Blob}" width="200" height="78" style="display:block;border-radius:7px;">
+          <div id="pdf_sig2_slot" style="width:200px;height:78px;"></div>
         </div>
         <div style="font-size:11px;color:#94a3b8;text-align:center;margin-top:4px;">${n2}</div>
       </div>`;
@@ -1163,12 +1159,21 @@
       </div>`;
 
     div.innerHTML = html;
-    return { div, data, blobURLs: [sig1Blob, sig2Blob].filter(Boolean) };
+
+    // Insert copied signature canvases into their slots (DOM append, not innerHTML)
+    div.querySelector('#pdf_sig1_slot').appendChild(copySig(sigCanvas1));
+    const slot2 = div.querySelector('#pdf_sig2_slot');
+    if (slot2) slot2.appendChild(copySig(sigCanvas2));
+
+    return { div, data };
   }
 
   // ── GENERATE PDF ──
   async function generatePDF(data) {
-    const { div, blobURLs } = buildPrintContent(data);
+    // Pass live signature canvases directly — copied into PDF div, no img loading needed
+    const sc1 = sig1Pad.isEmpty() ? null : sig1Canvas;
+    const sc2 = (showApplicant2 && !sig2Pad.isEmpty()) ? sig2Canvas : null;
+    const { div } = buildPrintContent(data, sc1, sc2);
     document.body.appendChild(div);
 
     const { jsPDF } = window.jspdf;
@@ -1181,7 +1186,6 @@
       backgroundColor: '#f1f5f9', logging: false
     });
     document.body.removeChild(div);
-    blobURLs.forEach(u => URL.revokeObjectURL(u));
 
     // Smart page cuts: look for a background-coloured row near each cut point
     const ctx = fullCanvas.getContext('2d');
