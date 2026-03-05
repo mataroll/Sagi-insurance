@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test — Signature + PDF</title>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; padding: 40px; background: #f1f5f9; direction: rtl; }
+  h2 { color: #0f1e35; }
+  .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  canvas#sigCanvas { border: 2px dashed #cbd5e1; border-radius: 8px; width: 100%; max-width: 400px; height: 150px; display: block; background: white; }
+  button { margin-top: 12px; padding: 10px 24px; background: #1d4ed8; color: white; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; margin-left: 8px; }
+  button.secondary { background: #64748b; }
+  #status { margin-top: 16px; font-size: 13px; color: #64748b; }
+  .long-content { }
+  .row { padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<h2>Test: חתימה + PDF</h2>
+
+<div class="card">
+  <h3 style="margin-top:0">חתום כאן:</h3>
+  <canvas id="sigCanvas"></canvas>
+  <br>
+  <button class="secondary" onclick="pad.clear()">נקה</button>
+  <button onclick="generatePDF()">צור PDF</button>
+  <div id="status"></div>
+</div>
+
+<script>
+  const canvas = document.getElementById('sigCanvas');
+  // Resize canvas to match display size
+  canvas.width = canvas.offsetWidth || 400;
+  canvas.height = 150;
+  const pad = new SignaturePad(canvas, { backgroundColor: 'rgb(255,255,255)', penColor: 'rgb(15,30,53)' });
+
+  async function generatePDF() {
+    const status = document.getElementById('status');
+
+    if (pad.isEmpty()) { alert('נא לחתום תחילה'); return; }
+
+    status.textContent = 'מכין...';
+
+    // Get signature as data URL, convert to Blob URL
+    const sigDataUrl = pad.toDataURL();
+    const blobURL = dataToBlobURL(sigDataUrl);
+
+    // Build the off-screen div
+    const div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#f1f5f9;font-family:Arial,sans-serif;direction:rtl;text-align:right;padding:20px;font-size:14px;';
+
+    // Build long content (to test page breaks)
+    let rows = '';
+    for (let i = 1; i <= 40; i++) {
+      rows += `<div class="row" style="padding:10px 0;border-bottom:1px solid #e2e8f0;font-size:14px;">שאלה ${i}: זוהי שורה של תוכן לבדיקת מעברי עמוד — האם הנך סובל/ת ממחלה כרונית כלשהי?  <strong style="color:#1d4ed8">לא</strong></div>`;
+    }
+
+    div.innerHTML = `
+      <div style="background:#0f1e35;color:white;padding:20px 30px;border-radius:8px 8px 0 0;margin-bottom:16px;">
+        <div style="font-size:20px;font-weight:700;">הצהרת בריאות — בדיקת PDF</div>
+      </div>
+      <div style="background:white;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
+        ${rows}
+      </div>
+      <div style="background:white;border-radius:8px;padding:16px 20px;">
+        <div style="font-size:13px;font-weight:600;color:#1d4ed8;margin-bottom:12px;">חתימה</div>
+        <div style="border:2px dashed #cbd5e1;border-radius:8px;padding:6px;display:inline-block;background:white;">
+          <img src="${blobURL}" width="300" height="120" style="display:block;border-radius:6px;">
+        </div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:6px;">ישראל ישראלי</div>
+      </div>
+    `;
+
+    document.body.appendChild(div);
+    status.textContent = 'מריץ html2canvas...';
+
+    try {
+      const fullCanvas = await html2canvas(div, {
+        scale: 2, useCORS: true, allowTaint: true,
+        backgroundColor: '#f1f5f9', logging: false
+      });
+
+      document.body.removeChild(div);
+      URL.revokeObjectURL(blobURL);
+
+      status.textContent = 'בונה PDF...';
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pw = pdf.internal.pageSize.getWidth();
+      const ph = pdf.internal.pageSize.getHeight();
+
+      // Smart cut: scan for background rows near page boundary
+      const ctx = fullCanvas.getContext('2d');
+      const pageHeightPx = Math.floor(fullCanvas.width * (ph / pw));
+      const bg = [241, 245, 249];
+
+      const findSafeCut = (idealY) => {
+        for (let dy = 0; dy <= 80; dy++) {
+          const y = idealY - dy;
+          if (y <= 0) return idealY;
+          const row = ctx.getImageData(0, y, fullCanvas.width, 1).data;
+          let isBg = true;
+          for (let x = 0; x < fullCanvas.width * 4; x += 4) {
+            if (Math.abs(row[x]-bg[0])>20 || Math.abs(row[x+1]-bg[1])>20 || Math.abs(row[x+2]-bg[2])>20) {
+              isBg = false; break;
+            }
+          }
+          if (isBg) return y;
+        }
+        return idealY;
+      };
+
+      let cutY = 0;
+      let pageCount = 0;
+      while (cutY < fullCanvas.height) {
+        if (pageCount > 0) pdf.addPage();
+        const nextIdeal = cutY + pageHeightPx;
+        const nextCut = nextIdeal >= fullCanvas.height ? fullCanvas.height : findSafeCut(nextIdeal);
+        const sliceH = nextCut - cutY;
+        const slice = document.createElement('canvas');
+        slice.width = fullCanvas.width;
+        slice.height = sliceH;
+        slice.getContext('2d').drawImage(fullCanvas, 0, -cutY);
+        pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pw, pw * sliceH / fullCanvas.width);
+        cutY = nextCut;
+        pageCount++;
+      }
+
+      pdf.save('test-signature.pdf');
+      status.textContent = `✓ PDF הורד (${pageCount} עמודים). בדוק אם החתימה מופיעה!`;
+    } catch(err) {
+      document.body.removeChild(div);
+      URL.revokeObjectURL(blobURL);
+      status.textContent = 'שגיאה: ' + err.message;
+      console.error(err);
+    }
+  }
+
+  function dataToBlobURL(dataUrl) {
+    const [header, b64] = dataUrl.split(',');
+    const mime = header.match(/:(.*?);/)[1];
+    const bin = atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([arr], { type: mime }));
+  }
+</script>
+</body>
+</html>
