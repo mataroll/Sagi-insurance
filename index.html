@@ -971,6 +971,15 @@
     return data;
   }
 
+  // Helper: copy a live signature canvas into a new 200×78 canvas (no img loading, no CORS)
+  const copySig = (src) => {
+    const c = document.createElement('canvas');
+    c.width = 200; c.height = 78;
+    c.style.cssText = 'display:block;border-radius:7px;';
+    if (src) c.getContext('2d').drawImage(src, 0, 0, 200, 78);
+    return c;
+  };
+
   // ── BUILD PDF — mirrors the form layout ──
   function buildPrintContent(data, sigCanvas1, sigCanvas2) {
     // short labels per question
@@ -1120,15 +1129,6 @@
       gfBody += `</div>`;
       html += sec('מסמכים כלליים מצורפים', gfBody);
     }
-
-    // Helper: copy a live signature canvas into a new 200×78 canvas (no img loading, no CORS)
-    const copySig = (src) => {
-      const c = document.createElement('canvas');
-      c.width = 200; c.height = 78;
-      c.style.cssText = 'display:block;border-radius:7px;';
-      if (src) c.getContext('2d').drawImage(src, 0, 0, 200, 78);
-      return c;
-    };
 
     const n1 = `${data['מועמד_ראשי_שם_פרטי']} ${data['מועמד_ראשי_שם_משפחה']}`.trim();
     let sigBody = `<div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:12px;">
