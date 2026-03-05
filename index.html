@@ -1176,6 +1176,10 @@
     const { div } = buildPrintContent(data, sc1, sc2);
     document.body.appendChild(div);
 
+    // Wait for fonts + two paint frames so canvases are composited before html2canvas runs
+    await document.fonts.ready;
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
     const pw = pdf.internal.pageSize.getWidth();
