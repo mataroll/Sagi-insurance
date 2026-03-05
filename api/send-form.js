@@ -8,7 +8,7 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { pdfBase64, applicantName, date } = req.body;
+  const { pdfBase64, applicantName, date, attachments = [] } = req.body;
 
   if (!pdfBase64 || !applicantName) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -39,7 +39,12 @@ module.exports = async function handler(req, res) {
         filename: `הצהרת_בריאות_${applicantName}_${date}.pdf`,
         content: Buffer.from(pdfBase64, 'base64'),
         contentType: 'application/pdf'
-      }
+      },
+      ...attachments.map(f => ({
+        filename: `[${f.folder}] ${f.name}`,
+        content: Buffer.from(f.base64, 'base64'),
+        contentType: f.type
+      }))
     ]
   });
 

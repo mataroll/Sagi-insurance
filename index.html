@@ -1265,11 +1265,28 @@
     try {
       generatedPdf = await generatePDF(data);
       const pdfBase64 = generatedPdf.output('datauristring').split(',')[1];
+
+      // Convert all attached files to base64 for emailing
+      const fileToBase64 = f => new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve({ name: f.name, type: f.type || 'application/octet-stream', base64: r.result.split(',')[1] });
+        r.onerror = reject;
+        r.readAsDataURL(f);
+      });
+      const attachments = [];
+      for (const [key, files] of Object.entries(attachedFiles)) {
+        const folder = key === 'general' ? 'מסמכים_כלליים' : `שאלה_${key.replace('q','')}`;
+        for (const f of files) {
+          const encoded = await fileToBase64(f);
+          attachments.push({ folder, ...encoded });
+        }
+      }
+
       document.getElementById('loadingText').textContent = 'שולח...';
       const response = await fetch('/api/send-form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pdfBase64, applicantName:`${fn} ${ln}`, date: data['תאריך'] || new Date().toLocaleDateString('he-IL') })
+        body: JSON.stringify({ pdfBase64, applicantName:`${fn} ${ln}`, date: data['תאריך'] || new Date().toLocaleDateString('he-IL'), attachments })
       });
       if (!response.ok) throw new Error('Server error');
       document.getElementById('loadingOverlay').classList.remove('show');
