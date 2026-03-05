@@ -46,9 +46,11 @@
 
     status.textContent = 'מכין...';
 
-    // Get signature as data URL, convert to Blob URL
-    const sigDataUrl = pad.toDataURL();
-    const blobURL = dataToBlobURL(sigDataUrl);
+    // Copy the live signature canvas directly — no img loading, no CORS issues
+    const sigCopy = document.createElement('canvas');
+    sigCopy.width = 300; sigCopy.height = 120;
+    sigCopy.style.cssText = 'display:block;border-radius:6px;';
+    sigCopy.getContext('2d').drawImage(canvas, 0, 0, 300, 120);
 
     // Build the off-screen div
     const div = document.createElement('div');
@@ -57,7 +59,7 @@
     // Build long content (to test page breaks)
     let rows = '';
     for (let i = 1; i <= 40; i++) {
-      rows += `<div class="row" style="padding:10px 0;border-bottom:1px solid #e2e8f0;font-size:14px;">שאלה ${i}: זוהי שורה של תוכן לבדיקת מעברי עמוד — האם הנך סובל/ת ממחלה כרונית כלשהי?  <strong style="color:#1d4ed8">לא</strong></div>`;
+      rows += `<div style="padding:10px 0;border-bottom:1px solid #e2e8f0;font-size:14px;">שאלה ${i}: זוהי שורה של תוכן לבדיקת מעברי עמוד — האם הנך סובל/ת ממחלה כרונית כלשהי?  <strong style="color:#1d4ed8">לא</strong></div>`;
     }
 
     div.innerHTML = `
@@ -69,26 +71,16 @@
       </div>
       <div style="background:white;border-radius:8px;padding:16px 20px;">
         <div style="font-size:13px;font-weight:600;color:#1d4ed8;margin-bottom:12px;">חתימה</div>
-        <div style="border:2px dashed #cbd5e1;border-radius:8px;padding:6px;display:inline-block;background:white;">
-          <img src="${blobURL}" width="300" height="120" style="display:block;border-radius:6px;">
-        </div>
+        <div id="sig-slot" style="border:2px dashed #cbd5e1;border-radius:8px;padding:6px;display:inline-block;background:white;"></div>
         <div style="font-size:12px;color:#94a3b8;margin-top:6px;">ישראל ישראלי</div>
       </div>
     `;
 
+    // Insert the copied canvas into the placeholder (DOM, not innerHTML — no loading needed)
+    div.querySelector('#sig-slot').appendChild(sigCopy);
+
     document.body.appendChild(div);
     status.textContent = 'מריץ html2canvas...';
-
-    // Wait for all images to finish loading before html2canvas captures
-    await new Promise(resolve => {
-      const imgs = Array.from(div.querySelectorAll('img'));
-      if (!imgs.length) return resolve();
-      let done = 0;
-      imgs.forEach(img => {
-        if (img.complete) { if (++done === imgs.length) resolve(); }
-        else { img.onload = img.onerror = () => { if (++done === imgs.length) resolve(); }; }
-      });
-    });
 
     try {
       const fullCanvas = await html2canvas(div, {
@@ -97,7 +89,6 @@
       });
 
       document.body.removeChild(div);
-      URL.revokeObjectURL(blobURL);
 
       status.textContent = 'בונה PDF...';
 
