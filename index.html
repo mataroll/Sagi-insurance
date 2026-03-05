@@ -1160,12 +1160,7 @@
 
     div.innerHTML = html;
 
-    // Insert copied signature canvases into their slots (DOM append, not innerHTML)
-    div.querySelector('#pdf_sig1_slot').appendChild(copySig(sigCanvas1));
-    const slot2 = div.querySelector('#pdf_sig2_slot');
-    if (slot2) slot2.appendChild(copySig(sigCanvas2));
-
-    return { div, data };
+    return { div, data, sigCanvas1, sigCanvas2 };
   }
 
   // ── GENERATE PDF ──
@@ -1173,8 +1168,13 @@
     // Pass live signature canvases directly — copied into PDF div, no img loading needed
     const sc1 = sig1Pad.isEmpty() ? null : sig1Canvas;
     const sc2 = (showApplicant2 && !sig2Pad.isEmpty()) ? sig2Canvas : null;
-    const { div } = buildPrintContent(data, sc1, sc2);
+    const { div, sigCanvas1: sc1ref, sigCanvas2: sc2ref } = buildPrintContent(data, sc1, sc2);
     document.body.appendChild(div);
+
+    // Insert canvas copies AFTER div is in the DOM (matches test.html working pattern)
+    div.querySelector('#pdf_sig1_slot').appendChild(copySig(sc1ref));
+    const slot2 = div.querySelector('#pdf_sig2_slot');
+    if (slot2) slot2.appendChild(copySig(sc2ref));
 
     // Wait for fonts + two paint frames so canvases are composited before html2canvas runs
     await document.fonts.ready;
