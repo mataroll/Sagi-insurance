@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1192,11 +1193,36 @@
     return pdf;
   }
 
-  function downloadPDF() {
+  async function downloadPDF() {
     if (!generatedPdf) return;
     const fn = document.getElementById('a1_first').value.trim();
     const ln = document.getElementById('a1_last').value.trim();
-    generatedPdf.save(`הצהרת_בריאות_${fn}_${ln}.pdf`);
+    const baseName = `הצהרת_בריאות_${fn}_${ln}`;
+
+    // Count all attached files across all keys
+    const allFiles = Object.values(attachedFiles).flat();
+    if (allFiles.length === 0) {
+      // No attachments — just download the PDF
+      generatedPdf.save(`${baseName}.pdf`);
+      return;
+    }
+
+    // Has attachments — bundle PDF + files into a ZIP
+    const zip = new JSZip();
+    zip.file(`${baseName}.pdf`, generatedPdf.output('blob'));
+
+    // Add each question's files into a subfolder
+    for (const [key, files] of Object.entries(attachedFiles)) {
+      const folderName = key === 'general' ? 'מסמכים_כלליים' : `שאלה_${key.replace('q','')}`;
+      files.forEach(f => zip.folder(folderName).file(f.name, f));
+    }
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${baseName}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   // ── SUBMIT ──
