@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תוצאת הצהרת בריאות — דוגמה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: #e8edf5;
+    color: #0f172a;
+    padding: 40px 16px 60px;
+    direction: rtl;
+  }
+
+  /* Page wrapper — simulates A4 */
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.14);
+  }
+
+  /* ── TOP HEADER ── */
+  .doc-header {
+    background: #0f1e35;
+    color: white;
+    padding: 28px 36px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .doc-header-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+
+  .doc-header-left p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .doc-header-right {
+    text-align: left;
+  }
+
+  .doc-date {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 4px;
+  }
+
+  .doc-id {
+    font-size: 11px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 3px 10px;
+    border-radius: 6px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    background: #1d4ed8;
+    padding: 10px 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #86efac;
+    flex-shrink: 0;
+  }
+
+  /* ── BODY ── */
+  .doc-body {
+    padding: 28px 36px;
+    background: #f8fafc;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .section-head {
+    padding: 13px 18px;
+    background: white;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-icon { display: none; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f1e35;
+  }
+
+  .section-body {
+    padding: 14px 18px;
+  }
+
+  /* ── INFO ROWS ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .info-item {}
+
+  .info-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  /* ── QUESTION ROW ── */
+  .q-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f8fafc;
+  }
+
+  .q-row:last-child { border-bottom: none; }
+
+  .q-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .q-num.yes { background: #eff6ff; color: #1d4ed8; }
+  .q-num.no  { background: #f1f5f9; color: #94a3b8; }
+
+  .q-body { flex: 1; }
+
+  .q-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.5;
+  }
+
+  .q-name.no { color: #94a3b8; font-weight: 400; }
+
+  .q-answer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+  }
+
+  .q-answer.yes {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .q-answer.no {
+    background: #f1f5f9;
+    color: #94a3b8;
+  }
+
+  .q-answer.na {
+    background: #f8fafc;
+    color: #cbd5e1;
+  }
+
+  .chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 7px;
+  }
+
+  .chip {
+    padding: 3px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #1d4ed8;
+    color: white;
+  }
+
+  .q-detail {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border-right: 2px solid #bfdbfe;
+    line-height: 1.6;
+  }
+
+  /* ── SIGNATURE ── */
+  .sig-block {
+    display: inline-block;
+  }
+
+  .sig-box {
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 8px;
+    background: white;
+    width: 200px;
+  }
+
+  .sig-img {
+    width: 100%;
+    height: 70px;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* placeholder sig */
+  .sig-placeholder {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sig-placeholder svg {
+    opacity: 0.25;
+  }
+
+  .sig-name {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 5px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    background: #0f1e35;
+    padding: 16px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .doc-footer-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .doc-footer-seal {
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 12px 0;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="doc-header-left">
+      <h1>הצהרת בריאות מבוגרים</h1>
+      <p>שאלון בריאות מגורים — מסמך חתום דיגיטלית</p>
+    </div>
+    <div class="doc-header-right">
+      <div class="doc-date">04 / 03 / 2026</div>
+      <div class="doc-id">#HDF-2026-0034</div>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    הצהרה הושלמה ונחתמה — מועברת לסוכן
+  </div>
+
+  <!-- BODY -->
+  <div class="doc-body">
+
+    <!-- APPLICANT -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon"></div>
+        <div class="section-title">פרטי מועמד ראשי</div>
+      </div>
+      <div class="section-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">שם מלא</div>
+            <div class="info-value">ישראל ישראלי</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">גובה / משקל</div>
+            <div class="info-value">1.80 מ' / 80 ק"ג</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">שינוי משקל</div>
+            <div class="info-value" style="color:#94a3b8;font-weight:500;">לא</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">ספורט מקצועי</div>
+            <div class="info-value" style="color:#94a3b8;font-weight:500;">לא</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GENERAL QUESTIONS -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon"></div>
+        <div class="section-title">שאלות כלליות</div>
+      </div>
+      <div class="section-body">
+
+        <div class="q-row">
+          <div class="q-num yes">2</div>
+          <div class="q-body">
+            <div class="q-name">עישון</div>
+            <div class="q-answer yes">✓ &nbsp;כן</div>
+            <div class="chips-row">
+              <span class="chip">סיגריות</span>
+            </div>
+            <div class="q-detail">כ-10 סיגריות ביום, מזה 8 שנים</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">3</div>
+          <div class="q-body">
+            <div class="q-name no">אלכוהול</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">4</div>
+          <div class="q-body">
+            <div class="q-name no">סמים</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num yes">5</div>
+          <div class="q-body">
+            <div class="q-name">פניות לרופא / בדיקות רפואיות</div>
+            <div class="q-answer yes">✓ &nbsp;כן</div>
+            <div class="q-detail">בדיקת דם שגרתית ואולטרסאונד בטן — תקין</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MEDICAL CONDITIONS -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon"></div>
+        <div class="section-title">מחלות ומצבים רפואיים</div>
+      </div>
+      <div class="section-body">
+
+        <div class="q-row">
+          <div class="q-num no">6</div>
+          <div class="q-body">
+            <div class="q-name no">מוח ומערכת העצבים</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">7</div>
+          <div class="q-body">
+            <div class="q-name no">לב, מחלות דם וכלי דם</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">8</div>
+          <div class="q-body">
+            <div class="q-name no">מחלה נפשית / דיכאון / חרדה</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num yes">9</div>
+          <div class="q-body">
+            <div class="q-name">לחץ דם / סוכרת / כולסטרול</div>
+            <div class="q-answer yes">✓ &nbsp;כן</div>
+            <div class="chips-row">
+              <span class="chip">לחץ דם</span>
+              <span class="chip">כולסטרול</span>
+            </div>
+            <div class="q-detail">לחץ דם גבוה — מטופל בתרופה מזה 3 שנים. כולסטרול — דיאטה בלבד</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">10</div>
+          <div class="q-body">
+            <div class="q-name no">אנדוקרינולוגיה ובלוטות</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">11</div>
+          <div class="q-body">
+            <div class="q-name no">סרטן וגידולים</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num yes">18</div>
+          <div class="q-body">
+            <div class="q-name">אורתופדיה</div>
+            <div class="q-answer yes">✓ &nbsp;כן</div>
+            <div class="chips-row">
+              <span class="chip">גב ועמוד שדרה</span>
+            </div>
+            <div class="q-detail">פריצת דיסק L4-L5 — טופלה פיזיותרפיה, ללא ניתוח</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">22</div>
+          <div class="q-body">
+            <div class="q-name no">שאלון גברים</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PAST HISTORY -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon"></div>
+        <div class="section-title">מצבים רפואיים נוספים</div>
+      </div>
+      <div class="section-body">
+
+        <div class="q-row">
+          <div class="q-num no">25</div>
+          <div class="q-body">
+            <div class="q-name no">ניתוחים</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num no">26</div>
+          <div class="q-body">
+            <div class="q-name no">אשפוז</div>
+            <div class="q-answer no">✕ &nbsp;לא</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="q-num yes">27</div>
+          <div class="q-body">
+            <div class="q-name">תרופות קבועות</div>
+            <div class="q-answer yes">✓ &nbsp;כן</div>
+            <div class="q-detail">Amlodipine 5mg — פעם ביום, מזה 3 שנים (לחץ דם)</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FAMILY HISTORY -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon"></div>
+        <div class="section-title">היסטוריה משפחתית</div>
+      </div>
+      <div class="section-body">
+        <div class="q-row">
+          <div class="q-num yes">28</div>
+          <div class="q-body">
+            <div class="q-name">קרן אור טופ / קרן לחיים</div>
+            <div class="chips-row">
+              <span class="chip">מחלת לב</span>
+              <span class="chip">סוכרת</span>
+            </div>
+            <div class="q-detail">אב — מחלת לב (גיל 62). אם — סוכרת סוג 2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon"></div>
+        <div class="section-title">חתימות ואישור</div>
+      </div>
+      <div class="section-body">
+        <div style="display:flex;gap:28px;flex-wrap:wrap;">
+          <div class="sig-block">
+            <div class="sig-box">
+              <!-- Placeholder signature SVG -->
+              <div class="sig-placeholder">
+                <svg width="120" height="50" viewBox="0 0 120 50">
+                  <path d="M10 35 Q20 10 30 28 Q40 45 50 20 Q60 5 70 30 Q80 48 90 25 Q100 10 110 32" stroke="#0f1e35" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="sig-name">ישראל ישראלי</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="font-size:11px;color:#94a3b8;line-height:1.7;">
+          הנני מצהיר/ה כי כל הפרטים שמסרתי לעיל הינם נכונים ומלאים לפי מיטב ידיעתי.
+          ידוע לי כי מסירת מידע שגוי או חלקי עלולה לפגוע בתוקף פוליסת הביטוח.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <div class="doc-footer-text">© 2026 — מסמך זה הופק אוטומטית ומוגן דיגיטלית</div>
+    <div class="doc-footer-seal">חתום ומאומת</div>
+  </div>
+
+</div>
+
+</body>
+</html>
